@@ -5,7 +5,11 @@ import Divider from '@mui/material/Divider';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
 import Board from '../Board';
-// import Collapse from '../../Components/Collapse';
+import Accordion from '@mui/joy/Accordion';
+import AccordionDetails from '@mui/joy/AccordionDetails';
+import AccordionGroup from '@mui/joy/AccordionGroup';
+import AccordionSummary from '@mui/joy/AccordionSummary';
+
 
 const Home = () => {
   return (
@@ -17,7 +21,7 @@ const Home = () => {
               <TrelloLogoIcon style={{ color: '#44546f', width: '18px', height: '18px' }} />
               <p className="ml-3 font-medium">Boards</p>
             </div>
-            
+
             <div className="flex items-center text-[14px] color-[#44546f] p-2 rounded-md hover:bg-hoverBackground cursor-pointer py-3">
               <ShowChartIcon style={{ color: '#44546f', width: '18px', height: '18px' }} />
               <p className="ml-3 font-medium">Home</p>
@@ -26,20 +30,29 @@ const Home = () => {
           <Divider sx={{ width: '224px' }} />
           <div>
             <p className="text-[14px] my-3">Workspaces</p>
-            <ul className="overflow-y-auto">
-              <li className="py-3 p-2 cursor-pointer rounded-md font-medium text-[14px] hover:bg-hoverBackground">
-                Không gian 1
-              </li>
-              <li className="py-3 p-2 cursor-pointer rounded-md font-medium text-[14px] hover:bg-hoverBackground">
-                Không gian 2
-              </li>
-              <li className="py-3 p-2 cursor-pointer rounded-md font-medium text-[14px] hover:bg-hoverBackground">
-                Không gian 3
-              </li>
-              <li className="py-3 p-2 cursor-pointer rounded-md font-medium text-[14px] hover:bg-hoverBackground">
-                Không gian 4
-              </li>
-            </ul>
+            <AccordionGroup>
+              <Accordion>
+                <AccordionSummary>Work space 1</AccordionSummary>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >Home</AccordionDetails>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >Board</AccordionDetails>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >Setting</AccordionDetails>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >View</AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary>Work space 2</AccordionSummary>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >Home</AccordionDetails>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >Board</AccordionDetails>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >Setting</AccordionDetails>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >View</AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary>Work space 3</AccordionSummary>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >Home</AccordionDetails>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >Board</AccordionDetails>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >Setting</AccordionDetails>
+                <AccordionDetails sx={{cursor: 'pointer', hover: '#091e420f'}} >View</AccordionDetails>
+              </Accordion>
+            </AccordionGroup>
           </div>
         </sidebar>
         <div className="w-full">
