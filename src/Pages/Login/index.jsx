@@ -31,6 +31,12 @@ const Login = memo(() => {
           expires: 7,
           path: "/",
         });
+
+        Cookies.set("refreshToken", res.refreshToken, {
+          expires: 7,
+          path: "/",
+        });
+
         storage.setIsLoggedIn(true);
         storage.setUserData(res.user);
         toast.success("Login successfully");
