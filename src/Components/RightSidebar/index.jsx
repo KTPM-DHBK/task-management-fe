@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { Divider } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider } from "@mui/material";
 import classNames from "classnames/bind";
 import styles from "./RightSidebar.module.scss";
 import MenuItem from "./MenuItem";
@@ -21,65 +21,68 @@ import SettingMenu from "./SettingMenu";
 const cx = classNames.bind(styles);
 
 const sizeIcon = 20;
-const items = {
-  headerTitle: "Menu",
-  data: [
-    {
-      title: "About this board",
-      icon: <ErrorOutlineIcon sx={{ fontSize: sizeIcon }} />,
-    },
-    {
-      title: "Activity",
-      icon: <ListIcon sx={{ fontSize: sizeIcon }} />,
-    },
-    {
-      title: "Archived Items",
-      icon: <InventoryIcon sx={{ fontSize: sizeIcon }} />,
-      divide: true,
-    },
-    {
-      title: "Settings",
-      icon: <SettingsIcon sx={{ fontSize: sizeIcon }} />,
-      children: {
-        headerTitle: "Settings",
-        data: [{ title: "Workspace" }, { title: "Permisison" }, { title: "Cover" }, { title: "Collection" }],
-        component: <SettingMenu />,
-      },
-    },
-    {
-      title: "Power-Ups",
-      icon: <RocketLaunchIcon sx={{ fontSize: sizeIcon }} />,
-    },
-    {
-      title: "Labels",
-      icon: <LabelIcon sx={{ fontSize: sizeIcon }} />,
-      divide: true,
-    },
-    {
-      title: "Watch",
-      icon: <RemoveRedEyeIcon sx={{ fontSize: sizeIcon }} />,
-    },
-    {
-      title: "Coppy board",
-      icon: <ContentCopyIcon sx={{ fontSize: sizeIcon }} />,
-    },
-    {
-      title: "Email to board",
-      icon: <MailOutlineIcon sx={{ fontSize: sizeIcon }} />,
-    },
-    {
-      title: "Print,export and share",
-      icon: <ShareIcon sx={{ fontSize: sizeIcon }} />,
-    },
-    {
-      title: "Leave this board",
-      icon: <LogoutIcon sx={{ fontSize: sizeIcon }} />,
-    },
-  ],
-};
 
 export default function RightSidebar({ isOpen, onClose }) {
+  const items = {
+    headerTitle: "Menu",
+    data: [
+      {
+        title: "About this board",
+        icon: <ErrorOutlineIcon sx={{ fontSize: sizeIcon }} />,
+      },
+      {
+        title: "Activity",
+        icon: <ListIcon sx={{ fontSize: sizeIcon }} />,
+      },
+      {
+        title: "Archived Items",
+        icon: <InventoryIcon sx={{ fontSize: sizeIcon }} />,
+        divide: true,
+      },
+      {
+        title: "Settings",
+        icon: <SettingsIcon sx={{ fontSize: sizeIcon }} />,
+        children: {
+          headerTitle: "Settings",
+          data: [{ title: "Workspace" }, { title: "Permisison" }, { title: "Cover" }, { title: "Collection" }],
+          component: <SettingMenu />,
+        },
+      },
+      {
+        title: "Power-Ups",
+        icon: <RocketLaunchIcon sx={{ fontSize: sizeIcon }} />,
+      },
+      {
+        title: "Labels",
+        icon: <LabelIcon sx={{ fontSize: sizeIcon }} />,
+        divide: true,
+      },
+      {
+        title: "Watch",
+        icon: <RemoveRedEyeIcon sx={{ fontSize: sizeIcon }} />,
+      },
+      {
+        title: "Coppy board",
+        icon: <ContentCopyIcon sx={{ fontSize: sizeIcon }} />,
+      },
+      {
+        title: "Email to board",
+        icon: <MailOutlineIcon sx={{ fontSize: sizeIcon }} />,
+      },
+      {
+        title: "Print,export and share",
+        icon: <ShareIcon sx={{ fontSize: sizeIcon }} />,
+      },
+      {
+        title: "Leave this board",
+        icon: <LogoutIcon sx={{ fontSize: sizeIcon }} />,
+        onClick: () => setDeleteDialog(true),
+      },
+    ],
+  };
+
   const [menuItems, setMenuItems] = useState([items]);
+  const [deleteDialog, setDeleteDialog] = useState(false);
 
   const handleClose = (e) => {
     if (onClose) {
@@ -112,8 +115,9 @@ export default function RightSidebar({ isOpen, onClose }) {
       const isParent = item.children ? true : false;
       const handleChange = () => {
         if (isParent) {
-          setMenuItems((prev) => [...prev, item.children]);
+          return setMenuItems((prev) => [...prev, item.children]);
         }
+        if (item.onClick) return item.onClick();
       };
       return (
         <div key={index}>
@@ -159,6 +163,41 @@ export default function RightSidebar({ isOpen, onClose }) {
 
         <div className="px-3 pt-3 pb-2 flex flex-col gap-1">{renderItems()}</div>
       </div>
+
+      <Dialog
+        open={deleteDialog}
+        onClose={() => {
+          setDeleteDialog(false);
+        }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Close board?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You can find and reopen closed boards at the bottom of your boards page.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setDeleteDialog(false);
+            }}
+          >
+            Disagree
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              setDeleteDialog(false);
+            }}
+            autoFocus
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
