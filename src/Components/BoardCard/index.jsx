@@ -240,6 +240,8 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
       color: "bg-purple-700",
     },
   ];
+
+  //! Sửa lại dùng form
   const [listLabel, setListLabel] = useState(listLabelAdd);
   const [listToDo, setListToDo] = useState([]);
   const [countMember, setCountMember] = useState([]);
@@ -699,6 +701,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
       )}
       {isShowMenuBtnCard && numberShow === 3 && (
         <>
+          {/* //! Tách component */}
           {!isCreateLabel && (
             <div
               style={{ top: position.top, left: position.left }}
@@ -855,6 +858,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
           <div className="text-center p-2 mx-8">Day</div>
           <div className="mx-2">
             <div className="py-2 px-1">
+              {/*//! Dùng thư viện  */}
               <Calendar />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Start date</label>
@@ -864,7 +868,6 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
                 />
               </div>
-
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Expiration date</label>
                 <input
@@ -878,11 +881,9 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
                 />
               </div>
-
               <button className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
                 Set Reminder
               </button>
-
               <button className="w-full mt-4 bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700">
                 Save
               </button>

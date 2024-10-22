@@ -97,6 +97,7 @@ function ListInBoard({
         <div className="my-4 px-[4px] flex">
           <div className="flex flex-nowrap">
             {listCount.map((item, index) => {
+              //! Tách component
               return (
                 <div key={index} className="px-[8px]">
                   <div className="flex flex-col w-[248px] max-h-[75vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
