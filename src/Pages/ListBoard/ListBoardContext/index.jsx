@@ -10,7 +10,8 @@ import {
   getWorkspaceById,
   updateBoard,
 } from "../../../Services/API/ApiBoard/apiBoard";
-import { apiAssignFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
+import { apiAssignFile, apiDeleteFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
+import { deleteComment, postComment } from "../../../Services/API/ApiComment";
 
 const ListBoardContext = createContext();
 
@@ -37,42 +38,123 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [postUploadedFiles, setPostUploadedFiles] = useState([]);
-  const [allUrls, setAllUrls] = useState([]);
+  const [content, setContent] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  //======= handle upload with API =======
-  // Hàm xử lý khi chọn file
   const handleFileChange = async (event) => {
     const files = event.target.files;
-    if (files.length === 0) return;
-    toast.info("Uploading...");
+    if (!files.length) return;
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const validFiles = [];
+    Array.from(files).forEach((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`File ${file.name} is too large to upload.`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+    if (!validFiles.length) return;
+    setLoading(true);
+    const loadToastId = toast.loading("Uploading...");
 
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
     try {
-      const response = await apiUploadMultiFile(formData);
+      // Tải lên các file song song
+      const uploadPromises = validFiles.map((file) => {
+        const formData = new FormData();
+        formData.append("files", file);
+        return apiUploadMultiFile(formData);
+      });
+
+      const responses = await Promise.all(uploadPromises);
+      toast.dismiss(loadToastId);
       toast.success("Upload successful!");
-      const totalFileUpload = [...response.data, ...uploadedFiles];
-      setUploadedFiles(totalFileUpload);
-      // Lấy tất cả các URL từ totalFileUpload và lưu trữ chúng trong trạng thái allUrls
-      const urls = totalFileUpload.map((file) => file.url);
-      setAllUrls(urls);
-      return response.data;
+
+      // Lấy dữ liệu file đã tải lên
+      const uploadedFilesData = responses.flatMap((response) => response.data);
+      const uploadedUrls = uploadedFilesData.map((file) => file.url);
+      // Cập nhật danh sách file đã tải lên
+      setUploadedFiles((prev) => [...prev, ...uploadedFilesData]);
+
+      // Gọi API để đính kèm (gửi) các URL với dữ liệu thẻ (card)
+      await handlePostFiles(dataCard.id, uploadedUrls);
+      return uploadedFilesData;
     } catch (error) {
-      toast.error("Upload failed!");
+      console.error("Error uploading files:", error);
+      toast.dismiss(loadToastId);
+      toast.error("Failed to upload files.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ============handle get UploadedFiles==============
-  const handlePostFiles = async (id, allUrls) => {
+  // ============HANDLE POST FILE LEN API==============
+  const handlePostFiles = useCallback(
+    async (id, allUrls) => {
+      try {
+        const response = await apiAssignFile(id, allUrls);
+        setPostUploadedFiles(response.data.files);
+        return response.data.files;
+      } catch (error) {
+        console.error("Failed to get uploaded files:", error);
+      }
+    },
+    [setPostUploadedFiles],
+  );
+
+  const handleDeleteFile = async (fileId) => {
     try {
-      const response = await apiAssignFile(id, allUrls);
-      setPostUploadedFiles(response.data.files);
+      await apiDeleteFile(dataCard.id, fileId);
+      setDataCard((prev) => ({
+        ...prev,
+        files: prev.files.filter((file) => file.id !== fileId),
+      }));
+      setPostUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
+      toast.success("File deleted successfully!");
     } catch (error) {
-      console.error("Failed to get uploaded files:", error);
+      console.error("Failed to delete file:", error);
+      toast.error("Failed to delete file.");
+    }
+  };
+
+  const handlePostComment = async () => {
+    const params = {
+      content: content,
+      files: postUploadedFiles,
+      cardId: dataCard.id,
+    };
+    setLoading(true);
+    const loadingToastId = toast.loading("Saving...");
+    try {
+      const response = await postComment(boardId, params);
+      toast.dismiss(loadingToastId);
+      toast.success("Create comment successfuly!");
+      setContent("");
+      const newComment = response.data;
+      setDataCard((prevDataCard) => ({
+        ...prevDataCard,
+        comments: [...prevDataCard.comments, newComment],
+      }));
+    } catch (err) {
+      toast.dismiss();
+      toast.error("Cannot create comment");
+      console.error("Lỗi khi đăng comment:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteComment = async (cmdId) => {
+    try {
+      await deleteComment(boardId, cmdId);
+      setDataCard((prevDataCard) => ({
+        ...prevDataCard,
+        comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId),
+      }));
+    } catch (err) {
+      console.error("Error deleting comment:", err);
     }
   };
 
@@ -86,7 +168,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
         const resBoard = await getBoardId(boardId);
         if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
-        console.log(resBoard);
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -106,7 +187,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     };
 
     fetchBoardData();
-  }, [boardId, idWorkSpace, listCount, navigate]);
+  }, [boardId, idWorkSpace, navigate]);
 
   useEffect(() => {
     const getAllUserInBoard = async () => {
@@ -299,9 +380,17 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         uploadedFiles,
         setUploadedFiles,
         handleFileChange,
-        postUploadedFiles,
+        postUploadedFiles: postUploadedFiles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
         setPostUploadedFiles,
         handlePostFiles,
+        loading,
+        content,
+        setContent,
+        isSaving,
+        setIsSaving,
+        handlePostComment,
+        handleDeleteComment,
+        handleDeleteFile,
       }}
     >
       {children}

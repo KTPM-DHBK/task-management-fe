@@ -24,3 +24,8 @@ export function apiAssignFile(id, urls) {
     urls: urls
   });
 }
+
+//delete file id
+export function apiDeleteFile(id, filedId) {
+  return request.delete(`card/${id}/delete-file/${filedId}`);
+}

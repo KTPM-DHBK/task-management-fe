@@ -25,6 +25,19 @@ class WorkspaceServices {
     return response.data;
   }
 
+  // Get list of boards by workspace
+  async getBoardWorkspace({limit, page}) {
+    const response = await request({
+      method: "GET",
+      baseURL: `${baseURL}`,
+      params: {
+        ...(limit && { limit }),
+        ...(page && { page }),
+      },
+    });
+    return response.data;
+  }
+
   // Method to get a Workspace by ID
   async getWorkspaceById(id) {
     const response = await request({

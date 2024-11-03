@@ -1,46 +1,44 @@
-import React from "react";
-import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import React, { useState, useRef, useEffect } from "react";
+// import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+// import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+// import MorePoper from "../ShowComment/MorePoper";
+import ItemAttachment from "./ItemAttachment";
 
-const Attachment = ({
-  quantityFile,
-  showImage,
-  fileToShow,
-  open,
-  handleClose,
-  handleShowImage,
-  handleHideImage,
-  formatDate,
-  postUploadedFiles
-}) => {
+const Attachment = ({ formatDate, postUploadedFiles, handleDeleteFile }) => {
+  const [showImage, setShowImage] = useState(false);
+  const [openMore, setOpenMore] = useState(null);
+  const moreRef = useRef(null);
+
+  const handleOpenMore = (id) => setOpenMore(openMore === id ? null : id);
+  const handleCloseMore = () => setOpenMore(null);
+
+  // Handle click outside to close MorePoper
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".more-poper") && !event.target.closest(".more-button")) {
+        setOpenMore(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle show and hide images
+  const handleShowImage = () => setShowImage(true);
+  const handleHideImage = () => setShowImage(false);
+  const fileToShow = showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4);
+  const quantityFile = +(postUploadedFiles.length - 4);
+  const listFile = postUploadedFiles.length;
+
   return (
     <div>
-      {fileToShow.map((item) => {
-        return (
-          <div key={item.id} className="flex items-center justify-between my-3 ">
-            <div className="flex items-center">
-              <div className="w-[60px]  h-[40px]">
-                <img
-                  src={item.url}
-                  alt="attachment"
-                  className="rounded-[4px] cursor-pointer object-cover w-full h-full"
-                />
-              </div>
-              <div className="ml-3">
-                <p className="text-gray-700 text-[13px]">{item.name}</p>
-                <p className="text-[12px] font-normal text-gray-500">Added {formatDate(item.createdAt)}</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <ArrowOutwardIcon sx={{ cursor: "pointer", width: "14px", height: "14px" }} />
-              <button onClick={open} className="px-1 ml-3 py-[2px] rounded-sm bg-gray-300">
-                <MoreHorizIcon />
-              </button>
-            </div>
-          </div>
-        );
-      })}
-      {postUploadedFiles.length > 4 && (
+      {fileToShow.map((item) => (
+        <ItemAttachment item={item} handleDeleteFile={handleDeleteFile} key={item.id} formatDate={formatDate} moreRef={moreRef} openMore={openMore} handleOpenMore={handleOpenMore} handleCloseMore={handleCloseMore}/>
+      ))}
+      {listFile > 4 && (
         <div>
           {showImage ? (
             <button onClick={handleHideImage} className="px-4 py-1 bg-gray-300 rounded-sm">

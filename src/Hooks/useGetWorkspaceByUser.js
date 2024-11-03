@@ -14,6 +14,18 @@ const useGetWorkspaceByUser = (options = {}) => {
   return { workspaceInfo: data?.data, isLoading, isError, refetch, isFetching };
 };
 
+const useGetBoardWorkspace = (options = {}) => {
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
+    queryKey: [EQueryKeys.GET_BOARD_WORKSPACE],
+    queryFn: () => workspaceServices.getBoardWorkspace(options),
+    ...{
+      refetchOnWindowFocus: false,
+    },
+  });
+
+  return { workspaceBoard: data?.data, isLoading, isError, refetch, isFetching };
+};
+
 const useGetWorkspaceById = (id) => {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID, id],
@@ -27,4 +39,4 @@ const useGetWorkspaceById = (id) => {
   return { workspaceDetails: data, isLoading, isError, refetch };
 };
 
-export { useGetWorkspaceByUser, useGetWorkspaceById };
+export { useGetWorkspaceByUser, useGetWorkspaceById, useGetBoardWorkspace };

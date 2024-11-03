@@ -1,11 +1,12 @@
-import React from "react";
+import React from 'react';
 import CloseIcon from "@mui/icons-material/Close";
 
-const UploadFile = ({ position, handleCloseShowMenuBtnCard, handleFileChange }) => {
+
+const UploadPoper = ({ handleCloseAttach, handleFileChange }) => {
   return (
     <div
-      style={{ top: position.top, left: position.left }}
-      className="absolute w-[300px] bg-white rounded-[8px] px-2 pt-2 pb-6 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
+      // style={{ top: position.top - 100, left: position.left - 320}}
+      className="absolute w-[260px] bg-white rounded-[8px] px-2 pt-2 pb-6 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
     >
       <div className="p-2 mx-8 mb-4 text-center">Attached</div>
       <div className="mx-2 my-2">
@@ -22,11 +23,11 @@ const UploadFile = ({ position, handleCloseShowMenuBtnCard, handleFileChange }) 
         </label>
       </button>
       <CloseIcon
-        onClick={handleCloseShowMenuBtnCard}
+        onClick={handleCloseAttach}
         className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100"
       />
     </div>
-  );
-};
+  )
+}
 
-export default UploadFile;
+export default UploadPoper

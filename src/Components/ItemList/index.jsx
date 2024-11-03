@@ -4,13 +4,32 @@ import PropTypes from "prop-types";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import InventoryIcon from "@mui/icons-material/Inventory";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import React from "react";
 
 import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { getAllUserByIdCard, getCardById } from "../../Services/API/ApiCard";
 import { useNavigate } from "react-router-dom";
 
-function ItemList({ dataList, dataCard, isFollowing = false, Attachments = [], Users = [], isArchived = false }) {
+function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [], Users = [], isArchived = false }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id });
+
+  const itemStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    display: "flex",
+    flex: 1,
+    alignItems: "center",
+    paddingLeft: 5,
+    borderRadius: 5,
+    userSelect: "none",
+    cursor: "grab",
+    boxSizing: "border-box",
+    zIndex: 999,
+  };
+
   let { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace, setMembersInCard } = useListBoardContext();
   const navigate = useNavigate();
   const handleGetDataCardDetail = async (dataList, dataCard) => {
@@ -26,10 +45,16 @@ function ItemList({ dataList, dataCard, isFollowing = false, Attachments = [], U
   };
 
   return (
-    <div className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer">
+    <div
+      style={itemStyle}
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer"
+    >
       <div
         onClick={() => handleGetDataCardDetail(dataList, dataCard)}
-        className="flex flex-col justify-center min-h-[40px]"
+        className="flex flex-col justify-center min-h-[40px] w-full"
       >
         {typeof dataCard.coverUrl === "string" && dataCard.coverUrl.startsWith("http") && (
           <div className="w-full min-h-[80px]">
@@ -135,4 +160,4 @@ function ItemList({ dataList, dataCard, isFollowing = false, Attachments = [], U
 ItemList.propTypes = {
   isArchived: PropTypes.bool,
 };
-export default ItemList;
+export default React.memo(ItemList);

@@ -22,7 +22,7 @@ import ItemPerson from "../ItemPerson";
 import { useStorage } from "../../Contexts";
 import AddLabelInCard from "./AddLabelInCard";
 import CreateLabel from "./CreateLabel";
-import UploadFile from "../Modals/UploadFile";
+import UploadFile from "./Attachment/UploadFile";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
@@ -47,6 +47,8 @@ export const BoardCard = () => {
     postUploadedFiles,
   } = useListBoardContext();
   const { userData } = useStorage();
+
+  // const [listLabel, setListLabel] = useState(listLabelAdd);
   const [listLabel, setListLabel] = useState(() => {
     var tagsCard = dataCard?.tagCards
       ?.map((tagCard) => {
@@ -93,16 +95,6 @@ export const BoardCard = () => {
     return dataCard.coverUrl;
   });
 
-  // eslint-disable-next-line
-  const [openPoper, setOpenPoper] = useState(false);
-  const [showImage, setShowImage] = useState(false);
-  // eslint-disable-next-line
-  const [listImages, setListImages] = useState([]);
-
-  // handle open, close poper delete image
-  const handleOpenPoper = () => setOpenPoper(true);
-  const handleClosePoper = () => setOpenPoper(false);
-
   // handle date
   const formatDate = (isoString) => {
     const date = new Date(isoString);
@@ -113,13 +105,6 @@ export const BoardCard = () => {
     const minutes = String(date.getMinutes()).padStart(2, "0");
     return `${day}-${month}-${year}, ${hours}:${minutes}`;
   };
-  // handle show and hide images
-  const handleShowImage = () => setShowImage(true);
-  const handleHideImage = () => setShowImage(false);
-  const fileToShow = showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4);
-  const quantityFile = +(postUploadedFiles.length - 4);
-
-  // handle delete image
 
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
@@ -515,14 +500,7 @@ export const BoardCard = () => {
                   <Attachment
                     uploadedFiles={uploadedFiles}
                     postUploadedFiles={postUploadedFiles}
-                    showImage={showImage}
-                    fileToShow={fileToShow}
-                    open={handleOpenPoper}
-                    handleClose={handleClosePoper}
                     formatDate={formatDate}
-                    handleShowImage={handleShowImage}
-                    handleHideImage={handleHideImage}
-                    quantityFile={quantityFile}
                   />
                 </div>
               </div>
