@@ -227,7 +227,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setDataList(data);
       console.log("dataCard", dataCard);
       setDataCard(dataCard);
-      setPostUploadedFiles([...dataCard.files]);
+      setPostUploadedFiles([...dataCard?.files]);
       setMembersInCard(dataCard?.members);
     },
     [isShowBoardCard, isShowBoardEdit],
