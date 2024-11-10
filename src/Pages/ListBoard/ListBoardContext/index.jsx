@@ -226,8 +226,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       }
       setDataList(data);
       console.log("dataCard", dataCard);
-      // const itemFile = dataCard.files.map((file) => ( file ));
-      // console.log('itemFile', itemFile)
       setDataCard(dataCard);
       setPostUploadedFiles([...dataCard.files]);
       setMembersInCard(dataCard?.members);
@@ -243,9 +241,9 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setPosition({ top: rect.bottom + 8, left: rect.left });
       setDataList(dataList);
       setDataCard(dataCard);
-      const itemFile = dataCard.files.map((file) => ( file ));
-      console.log('itemFile', itemFile);
-      setPostUploadedFiles([...itemFile]);
+      // const itemFile = dataCard.files.map((file) => ( file ));
+      // console.log('itemFile', itemFile);
+      // setPostUploadedFiles([...itemFile]);
     },
     //eslint-disable-next-line
     [isShowBoardEdit],
