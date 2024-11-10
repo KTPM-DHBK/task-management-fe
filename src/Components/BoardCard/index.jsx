@@ -49,13 +49,11 @@ export const BoardCard = () => {
     postUploadedFiles,
     content,
     setContent,
-    // uploadedFiles,
     isSaving,
     handlePostComment,
     handleDeleteComment,
     loading,
     handleDeleteFile,
-    setEditorInstance,
     boardId,
     setDataCard,
   } = useListBoardContext();
@@ -458,12 +456,12 @@ export const BoardCard = () => {
                     </div>
                     {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                   </div>
-                  <div className="flex items-center flex-wrap">
+                  <div className="flex flex-wrap items-center">
                     {membersInCard && membersInCard?.length !== 0 && (
                       <ItemPerson handleShowMenuBtnCard={handleShowMenuBtnCard} />
                     )}
                     {countLabel?.length > 0 && (
-                      <div className="mr-2 mb-2">
+                      <div className="mb-2 mr-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Label</span>
                         </div>
@@ -694,7 +692,6 @@ export const BoardCard = () => {
               {/* POST COMMENTS */}
               <div className="flex w-full">
                 <WriteComment
-                  setEditorInstance={setEditorInstance}
                   setContent={setContent}
                   loading={loading}
                   handleFileChange={handleFileChange}

@@ -42,24 +42,18 @@ const ItemAttachment = ({ item, moreRef, handleCloseMore, openMore, handleOpenMo
           )}
         </div>
       </div>
-      {/* {openImg && (
-        <div className="z-50 w-full h-full m-auto text-center bg-black bg-opacity-50 " onClick={handleCloseImageClick}>
-          <img
-            src={item.url}
-            alt="attachment"
-            className="rounded-[4px] p-4 cursor-pointer object-cover w-full h-full"
-          />
-        </div>
-      )} */}
       <Modal open={openImg} onClose={handleCloseImageClick}>
-        <Box >
-        <div className="z-50 w-[80%] h-[80%] m-auto text-center bg-black bg-opacity-50 " onClick={handleCloseImageClick}>
-          <img
-            src={item.url}
-            alt="attachment"
-            className="rounded-[4px] p-4 cursor-pointer object-cover w-full h-full"
-          />
-        </div>
+        <Box>
+          <div
+            className="z-50 w-[80%] h-[80%] m-auto text-center bg-black bg-opacity-50 "
+            onClick={handleCloseImageClick}
+          >
+            <img
+              src={item.url}
+              alt="attachment"
+              className="rounded-[4px] p-4 cursor-pointer object-cover w-full h-full"
+            />
+          </div>
         </Box>
       </Modal>
     </div>

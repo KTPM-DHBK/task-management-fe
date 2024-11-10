@@ -86,6 +86,7 @@
     "@babel/preset-env": "^7.23.8",
     "@babel/preset-react": "^7.23.3",
     "@mui/x-date-pickers": "^7.22.0",
+    "@types/tinymce": "^4.6.9",
     "autoprefixer": "^10.4.20",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^9.1.3",

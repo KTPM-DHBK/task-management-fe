@@ -82,6 +82,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
       // Gọi API để đính kèm (gửi) các URL len dữ liệu thẻ (card)
       await handlePostFiles(dataCard.id, uploadedUrls);
+      console.log("uploadFiledData", uploadedFilesData)
       return uploadedFilesData;
     } catch (error) {
       console.error("Error uploading files:", error);
@@ -121,16 +122,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     }
   };
 
-  // const handleFileCommentChange = (event) => {
-  //   const files = event.target.files;
-  //   if (files && files.length > 0) {
-  //     const fileUrls = Array.from(files).map((file) => URL.createObjectURL(file));
-  //     setUpFileComment(fileUrls); // Lưu URL xem trước
-  //   } else {
-  //     setUpFileComment([]); // Đảm bảo upFileComment là mảng rỗng nếu không có file nào được chọn
-  //   }
-  // };
-
   const handlePostComment = async () => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(content, "text/html");
@@ -143,7 +134,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     };
     setLoading(true);
     const loadingToastId = toast.loading("Saving...");
-
     try {
       const response = await postComment(boardId, params);
       toast.dismiss(loadingToastId);
@@ -180,6 +170,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       console.error("Error deleting comment:", err);
     }
   };
+
+  console.log("postUploadedFiles", postUploadedFiles);
 
   let prevListCountRef = useRef();
   useEffect(() => {
@@ -233,12 +225,17 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         setIsShowBoardEdit(!isShowBoardEdit);
       }
       setDataList(data);
-      setPostUploadedFiles([...dataCard.files]);
+      console.log("dataCard", dataCard);
+      // const itemFile = dataCard.files.map((file) => ( file ));
+      // console.log('itemFile', itemFile)
       setDataCard(dataCard);
+      setPostUploadedFiles([...dataCard.files]);
       setMembersInCard(dataCard?.members);
     },
     [isShowBoardCard, isShowBoardEdit],
   );
+
+  console.log("dataCard", dataCard);
 
   const handleShowBoardEdit = useCallback(
     async (e, dataList, dataCard) => {
@@ -246,9 +243,11 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setPosition({ top: rect.bottom + 8, left: rect.left });
       setDataList(dataList);
       setDataCard(dataCard);
-      setIsShowBoardEdit(!isShowBoardEdit);
-      setPostUploadedFiles([...dataCard.files]);
+      const itemFile = dataCard.files.map((file) => ( file ));
+      console.log('itemFile', itemFile);
+      setPostUploadedFiles([...itemFile]);
     },
+    //eslint-disable-next-line
     [isShowBoardEdit],
   );
 
@@ -415,7 +414,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         idWorkSpace,
         upFileComment,
         setUpFileComment,
-        // handleFileCommentChange,s
         setIsShowBoardEdit,
       }}
     >
