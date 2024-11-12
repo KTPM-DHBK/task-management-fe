@@ -28,8 +28,6 @@ const Attachment = ({ formatDate, postUploadedFiles, handleDeleteFile }) => {
   const fileToShow = showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4);
   const quantityFile = +(postUploadedFiles.length - 4);
   const listFile = postUploadedFiles.length;  
-  console.log("listFile: " + listFile)
-  console.log("postUploadedFiles: " + postUploadedFiles)
 
   return (
     <div>

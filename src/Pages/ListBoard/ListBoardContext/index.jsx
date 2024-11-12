@@ -11,7 +11,7 @@ import {
   updateBoard,
 } from "../../../Services/API/ApiBoard/apiBoard";
 import { apiAssignFile, apiDeleteFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
-import { deleteComment, postComment } from "../../../Services/API/ApiComment";
+import { deleteComment, postComment, updateComment } from "../../../Services/API/ApiComment";
 
 const ListBoardContext = createContext();
 
@@ -82,7 +82,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
       // Gọi API để đính kèm (gửi) các URL len dữ liệu thẻ (card)
       await handlePostFiles(dataCard.id, uploadedUrls);
-      console.log("uploadFiledData", uploadedFilesData)
       return uploadedFilesData;
     } catch (error) {
       console.error("Error uploading files:", error);
@@ -98,7 +97,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     async (id, allUrls) => {
       try {
         const response = await apiAssignFile(id, allUrls);
-        setPostUploadedFiles(response.data.files);
+        setPostUploadedFiles((prev) => [...prev, ...response.data.files]);
         return response.data.files;
       } catch (error) {
         console.error("Failed to get uploaded files:", error);
@@ -149,6 +148,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         ...prevDataCard,
         comments: [...prevDataCard.comments, newComment],
       }));
+      // Cập nhật danh sách file đã tải lên từ comment
+      setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
     } catch (err) {
       toast.dismiss(loadingToastId);
       toast.error("Cannot create comment");
@@ -171,7 +172,16 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     }
   };
 
-  console.log("postUploadedFiles", postUploadedFiles);
+  const handleUpdateComment = async (cmdId) => {
+    try {
+      const response = await updateComment(boardId, cmdId);
+      setDataCard((prevDataCard) => ({...prevDataCard, comments: prevDataCard.comments.map((comment) => comment.id === cmdId ? response.data : comment)}));
+      toast.success("Comment updated successfully!");
+    } catch (err) {
+      toast.error("Cannot update comment");
+      console.error("Error updating comment:", err);
+    }
+  }
 
   let prevListCountRef = useRef();
   useEffect(() => {
@@ -225,7 +235,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         setIsShowBoardEdit(!isShowBoardEdit);
       }
       setDataList(data);
-      console.log("dataCard", dataCard);
       setDataCard(dataCard);
       setPostUploadedFiles([...dataCard?.files]);
       setMembersInCard(dataCard?.members);
@@ -233,17 +242,13 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     [isShowBoardCard, isShowBoardEdit],
   );
 
-  console.log("dataCard", dataCard);
-
   const handleShowBoardEdit = useCallback(
     async (e, dataList, dataCard) => {
       const rect = e.currentTarget.getBoundingClientRect();
       setPosition({ top: rect.bottom + 8, left: rect.left });
       setDataList(dataList);
       setDataCard(dataCard);
-      // const itemFile = dataCard.files.map((file) => ( file ));
-      // console.log('itemFile', itemFile);
-      // setPostUploadedFiles([...itemFile]);
+      setPostUploadedFiles([...dataCard?.files]);
     },
     //eslint-disable-next-line
     [isShowBoardEdit],
@@ -413,6 +418,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         upFileComment,
         setUpFileComment,
         setIsShowBoardEdit,
+        handleUpdateComment,
       }}
     >
       {children}

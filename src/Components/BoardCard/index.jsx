@@ -56,6 +56,7 @@ export const BoardCard = () => {
     handleDeleteFile,
     boardId,
     setDataCard,
+    handleUpdateComment,
   } = useListBoardContext();
   const { userData } = useStorage();
   const [listLabel, setListLabel] = useState(() => {
@@ -707,6 +708,7 @@ export const BoardCard = () => {
                   key={item.id}
                   formatDate={formatDate}
                   handleDeleteComment={handleDeleteComment}
+                  handleUpdateComment={handleUpdateComment}
                 />
               ))}
             </div>

@@ -1,10 +1,9 @@
 import React from "react";
 import { useStorage } from "../../../Contexts";
 import { Avatar } from "@mui/material";
-// import {  useGetUserProfile } from "../../../Hooks";
-// import Loading from "../../Loading";
 
-const ShowComment = ({item, formatDate, handleDeleteComment}) => {
+
+const ShowComment = ({item, formatDate, handleDeleteComment, handleUpdateComment}) => {
   const { userData } = useStorage();
   //eslint-disable-next-line
   const { setIsLoggedIn, isLoggedIn } = useStorage();
@@ -28,11 +27,11 @@ const ShowComment = ({item, formatDate, handleDeleteComment}) => {
             <p className="text-[12px] font-normal text-gray-500">Created {formatDate(item.createdAt)}</p>
 
             {/* Comment Text */}
-            <div dangerouslySetInnerHTML={{__html:item.content}} className="p-2 mt-1 w-[420px] text-gray-800 bg-white border border-gray-300 rounded-lg"></div>
+            <div dangerouslySetInnerHTML={{__html:item.content}} className="p-2 my-2 text-[16px] w-[420px] text-gray-800 bg-white border border-gray-300 rounded-lg"></div>
 
             {/* Actions */}
             <div className="flex mt-2 space-x-4 text-sm text-gray-500">
-              <button className="hover:underline">Edit</button>
+              <button onClick={() => handleUpdateComment(item.id)} className="hover:underline">Edit</button>
               <span>•</span>
               <button onClick={() => handleDeleteComment(item.id)} className="hover:underline">Delete</button>
             </div>
