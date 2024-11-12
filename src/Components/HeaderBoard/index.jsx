@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 
@@ -11,15 +11,15 @@ import GroupIcon from "@mui/icons-material/Group";
 import GroupAvatars from "../GroupAvatars";
 
 function HeaderBoard() {
-  const { activeStar, handleActiveStar, dataBoard } = useListBoardContext();
+  const { activeStar, handleActiveStar, dataBoard, membersBoard } = useListBoardContext();
   const [rightSidebar, setRightSidebar] = useState(false);
 
-  const handleToggleRightSidebar = () => {
+  const handleToggleRightSidebar = useCallback(() => {
     setRightSidebar(!rightSidebar);
-  };
+  }, [rightSidebar]);
 
   return (
-    <div className="relative flex items-center justify-between h-[32px] p-6 bg-gray-100">
+    <div className="relative flex items-center justify-between h-[32px] py-6 px-4 bg-gray-100">
       <div className="flex items-center">
         <div className="text-black p-2 font-bold text-[18px]">{dataBoard.title}</div>
         <TippyDetail title="Star or unstar this tables. Starred tables will appear at the top of the tables list.">
@@ -35,9 +35,14 @@ function HeaderBoard() {
           </div>
         </TippyDetail>
       </div>
-      <div className="flex items-center">
+      <div
+        style={{
+          transition: "margin 0.2s ease-in",
+        }}
+        className={`flex items-center ${rightSidebar && "mr-[330px]"}`}
+      >
         <div className="flex">
-          <GroupAvatars />
+          <GroupAvatars users={membersBoard} />
         </div>
 
         <TippyDetail title={"Table filter tags"}>
@@ -52,7 +57,7 @@ function HeaderBoard() {
             <span className="text-[14px] font-medium text-white">Members</span>
           </div>
         </TippyDetail>
-        <TippyDetail title={"menuHeader"}>
+        <TippyDetail title={"Menu"}>
           <div
             onClick={handleToggleRightSidebar}
             className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"

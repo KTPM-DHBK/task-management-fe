@@ -71,7 +71,7 @@ function List({ item = {}, id }) {
             />
           </div>
           {/* List board */}
-          <SortableContext strategy={verticalListSortingStrategy} items={cards?.map((item) => item.id)}>
+          <SortableContext strategy={verticalListSortingStrategy} items={cards}>
             <div className="flex-1 p-1">
               {cards?.map((card, index) => {
                 return (

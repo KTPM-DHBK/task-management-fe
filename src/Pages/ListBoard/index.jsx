@@ -129,6 +129,7 @@ function ListBoardContent() {
             backgroundRepeat: "no-repeat",
             maxHeight: "100%",
             overflow: "hidden",
+            transition: "background-image 0.3s ease",
           }}
         >
           <HeaderBoard />

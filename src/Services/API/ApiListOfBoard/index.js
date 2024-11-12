@@ -18,3 +18,11 @@ export async function UpdateList(boardId, listId, newData) {
 export async function DeleteList(idBoard, idList) {
   return await request.delete(`/board/${idBoard}/list/${idList}`);
 }
+
+export async function changePositionList({ boardId, listId, newPosition }) {
+  const response = await request.post(`/board/${boardId}/list/arrange`, {
+    listId1: `${listId}`,
+    newPosition: `${newPosition}`,
+  });
+  return response?.data;
+}

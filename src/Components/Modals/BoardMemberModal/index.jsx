@@ -106,7 +106,7 @@ function BoardMemberModal({ open = false, onClose }) {
         },
       }}
     >
-      <DialogTitle width={"600px"} sx={{ textAlign: "center" }}>
+      <DialogTitle width={"600px"} sx={{ textAlign: "center", color: "#172b4d" }}>
         Members on board
         <button
           onClick={handleClose}

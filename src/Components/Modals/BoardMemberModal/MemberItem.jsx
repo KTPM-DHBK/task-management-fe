@@ -3,13 +3,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
-import { grey } from "@mui/material/colors";
 import { Autocomplete, Button, CircularProgress, TextField } from "@mui/material";
 import { memo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 import { removeMember } from "../../../Services/API/ApiBoard/apiBoard";
+import { stringAvatar } from "../../../Utils/color";
 
 const options = ["Member", "Admin"];
 
@@ -42,10 +42,18 @@ function MemberItem({ data, onDeleted, isAdmin = true, disabelRemove = false }) 
     <ListItem disableGutters>
       <ListItemButton>
         <>
-          <Avatar sx={{ bgcolor: grey[500], width: 32, height: 32, marginRight: 2 }}>
-            {data?.name?.charAt(0)?.toUpperCase()}
-          </Avatar>
-          <ListItemText primary={data?.email} />
+          <Avatar
+            {...stringAvatar(data?.name)}
+            alt={data?.name}
+            src={data?.avatarUrl}
+            sx={{
+              width: 32,
+              height: 32,
+              marginRight: 1,
+              fontSize: "16px",
+            }}
+          />
+          <ListItemText sx={{ color: "#172b4d" }} primary={data?.email} />
           {isAdmin && (
             <>
               {confirmDelete || (

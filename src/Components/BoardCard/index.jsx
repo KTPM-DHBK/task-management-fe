@@ -29,7 +29,7 @@ import CalendarPopper from "./CalendarPopper";
 import ShowComment from "./ShowComment";
 import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
-import { JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
+import { updateCard } from "../../Services/API/ApiCard";
 import CopyCard from "./CopyCard";
 import UploadPoper from "./Attachment/UploadPoper";
 import WriteComment from "./WriteComment";
@@ -367,7 +367,6 @@ export const BoardCard = () => {
           }
         });
         try {
-          // await JoinToCard(dataCard?.id, member.id);
         } catch (error) {
           console.error("Error join to card:", error);
         }
@@ -377,15 +376,6 @@ export const BoardCard = () => {
       } else {
         setMembersBoard([...membersBoard, member]);
       }
-      // setDataCard((prevDataCard) => {
-      //   const isMemberExists = prevDataCard?.members?.some((m) => m.id === member.id);
-      //   return {
-      //     ...prevDataCard,
-      //     members: isMemberExists
-      //       ? prevDataCard.members.filter((m) => m.id !== member.id)
-      //       : [...(prevDataCard.members || []), member],
-      //   };
-      // });
     } catch (error) {
       console.error("Error handling member:", error);
     }

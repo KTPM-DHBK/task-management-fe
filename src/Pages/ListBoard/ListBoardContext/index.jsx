@@ -2,7 +2,7 @@ import React, { createContext, useContext, useCallback, useEffect, useRef, useSt
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { CreateList, UpdateList } from "../../../Services/API/ApiListOfBoard";
+import { CreateList } from "../../../Services/API/ApiListOfBoard";
 import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
 import {
   getAllMembersByIdBoard,

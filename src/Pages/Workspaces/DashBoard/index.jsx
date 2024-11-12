@@ -7,6 +7,7 @@ import { BoardInformation } from "../../../Components/BoardInformation/BoardInfo
 import { useParams } from "react-router-dom";
 import { useGetWorkspaceByUser, useGetWorkspaceById } from "../../../Hooks";
 import Loading from "../../../Components/Loading";
+import ClosedBoarDialog from "./ClosedBoard";
 
 const DashBoard = () => {
   const [listBoard, setListBoard] = useState([]);
@@ -14,9 +15,12 @@ const DashBoard = () => {
   const { id } = useParams();
   const { workspaceDetails, isLoading: isLoadingCurrentWorkspace } = useGetWorkspaceById(id);
   const { workspaceInfo, isLoading: isLoadingWorkspace } = useGetWorkspaceByUser();
+  const [openClosedBoard, setOpenClosedBoard] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleOpenClosedBoard = () => setOpenClosedBoard(!openClosedBoard);
 
   useEffect(() => {
     if (Array.isArray(workspaceDetails?.boards)) setListBoard(workspaceDetails?.boards);
@@ -50,10 +54,15 @@ const DashBoard = () => {
           <CreateNewBoard open={open} handleClose={handleClose} />
         </div>
         <div className="my-12">
-          <button className="p-2 text-sm font-semibold rounded-md bg-hoverBackground text-textColor">
+          <button
+            onClick={handleOpenClosedBoard}
+            className="p-2 text-sm font-semibold rounded-md bg-hoverBackground text-textColor"
+          >
             View closed boards
           </button>
         </div>
+
+        <ClosedBoarDialog open={openClosedBoard} onClose={handleOpenClosedBoard} />
       </div>
     </div>
   );

@@ -37,7 +37,6 @@ export async function getBoardId(id) {
   }
 }
 
-// delete board theo di
 export async function deleteBoardId(id) {
   try {
     const response = await request.delete(`/board/${id}`);
