@@ -27,6 +27,7 @@ import { EQueryKeys } from "../../constants";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import ChangeBackgroundMenu from "./ChangeBackgroundMenu";
 import { memo } from "react";
+import LabelMenu from "./LabelMenu";
 
 const cx = classNames.bind(styles);
 
@@ -84,6 +85,10 @@ function RightSidebar({ isOpen, onClose }) {
       {
         title: "Labels",
         icon: <LabelOutlinedIcon sx={{ fontSize: sizeIcon }} />,
+        children: {
+          headerTitle: "Labels",
+          component: <LabelMenu />,
+        },
         divide: true,
       },
       {

@@ -52,3 +52,8 @@ export async function changePositionCard({ cardId, activeListId, overListId, pos
   });
   return response?.data;
 }
+
+export async function getArchivedCards(boardId) {
+  const response = await request.get(`/board/${boardId}/cards/archived`);
+  return response?.data;
+}

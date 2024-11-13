@@ -40,7 +40,7 @@ function MemberItem({ data, onDeleted, isAdmin = true, disabelRemove = false }) 
 
   return (
     <ListItem disableGutters>
-      <ListItemButton>
+      <ListItemButton sx={{ borderRadius: 1.5 }}>
         <>
           <Avatar
             {...stringAvatar(data?.name)}

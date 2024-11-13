@@ -70,10 +70,10 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
         <div className="flex flex-col mx-[12px]">
           <div className="flex items-center flex-wrap mt-2">
             {dataCard?.tagCards?.length > 0 &&
-              dataCard?.tagCards.map((tagCard) =>
+              dataCard?.tagCards.map((tagCard, index) =>
                 tagCard?.tag?.color ? (
                   <div
-                    key={tagCard.tagId}
+                    key={index}
                     className={`hover:opacity-90 ${tagCard.tag.color} mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
                   />
                 ) : null,

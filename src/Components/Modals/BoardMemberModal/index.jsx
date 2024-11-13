@@ -83,6 +83,7 @@ function BoardMemberModal({ open = false, onClose }) {
         return res.data;
       })
       .then((data) => {
+        data = data.filter((item) => item.user !== null);
         let members = data.map((item) => {
           item.user.role = item.role;
           return item.user;
@@ -115,7 +116,7 @@ function BoardMemberModal({ open = false, onClose }) {
           <CloseIcon />
         </button>
       </DialogTitle>
-      <List sx={{ pt: 0 }}>
+      <List sx={{ pt: 0, paddingX: 2 }}>
         {members.map((item, index) => {
           const disable = item.id === userData.id;
 
