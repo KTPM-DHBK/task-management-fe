@@ -29,6 +29,7 @@ import ChangeBackgroundMenu from "./ChangeBackgroundMenu";
 import { memo } from "react";
 import LabelMenu from "./LabelMenu";
 import About from "./About";
+import Activities from "./Activities";
 
 const cx = classNames.bind(styles);
 
@@ -52,7 +53,10 @@ function RightSidebar({ isOpen, onClose }) {
       {
         title: "Activity",
         icon: <ListIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true,
+        children: {
+          headerTitle: "Activity",
+          component: <Activities />,
+        },
       },
       {
         title: "Archived Items",
@@ -261,7 +265,7 @@ function RightSidebar({ isOpen, onClose }) {
           <Divider component={"div"} />
         </div>
 
-        <div className="flex flex-col gap-1 px-3 pt-3 pb-2">{renderItems()}</div>
+        <div className="flex flex-col gap-1 px-3 pt-3 pb-2 overflow-y-scroll">{renderItems()}</div>
       </div>
 
       {/* //TODO  Bật lên popup rời khỏi board  */}

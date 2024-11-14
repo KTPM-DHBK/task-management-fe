@@ -86,3 +86,8 @@ export async function addMemberIntoBoard(userId, boardId) {
 export async function updateBoard(boardId, data) {
   return await request.patch(`/board/${boardId}`, data);
 }
+
+export async function getActivities(boardId) {
+  const response = await request.get(`/board/${boardId}/activities`);
+  return response?.data;
+}
