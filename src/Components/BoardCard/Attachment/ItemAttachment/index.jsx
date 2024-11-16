@@ -6,13 +6,14 @@ import { Link } from "react-router-dom";
 import { Box, Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Zoom from "react-medium-image-zoom";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ItemAttachment = ({ item, moreRef, handleCloseMore, openMore, handleOpenMore, formatDate, handleDeleteFile }) => {
   const [openImg, setOpenImg] = useState(false);
   const handleImageClick = () => setOpenImg(true);
   const handleCloseImageClick = () => setOpenImg(false);
   return (
-    <div key={item.id} className="flex items-center justify-between my-3">
+    <div className="flex items-center justify-between my-3">
       <div className="flex items-center">
         <div className="w-[60px] h-[40px]">
           <img
@@ -74,7 +75,20 @@ const ItemAttachment = ({ item, moreRef, handleCloseMore, openMore, handleOpenMo
                     cursor: "pointer",
                   }}
                 />
-                <span className="text-[16px] text-white ml-2">Delete</span>
+                <span className="text-[16px] text-white ml-2">Close</span>
+              </button>
+              <button
+                onClick={() => handleDeleteFile(item.id)}
+                className="flex items-center p-2 mx-6 text-white rounded-md hover:bg-gray-800"
+              >
+                <DeleteIcon
+                  sx={{
+                    color: "white",
+                    fontSize: "16px",
+                    cursor: "pointer",
+                  }}
+                />
+                <span className="text-[16px] text-red-600 ml-2">Delete</span>
               </button>
             </div>
           </div>

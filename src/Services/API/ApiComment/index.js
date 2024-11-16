@@ -12,7 +12,7 @@ export function getComment(boardId, cardId) {
 
 // Api update comment
 export function updateComment(boardId, id, params) {
-  return request.patch(`/board/${boardId}/comment/${id}`, params);
+  return request.put(`/board/${boardId}/comment/${id}`, params);
 }
 
 // Api delete comment

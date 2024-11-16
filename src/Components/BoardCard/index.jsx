@@ -33,6 +33,7 @@ import { updateCard } from "../../Services/API/ApiCard";
 import CopyCard from "./CopyCard";
 import UploadPoper from "./Attachment/UploadPoper";
 import WriteComment from "./WriteComment";
+import CardAddDetail from "./CardAddDetail";
 
 export const BoardCard = () => {
   const {
@@ -57,6 +58,9 @@ export const BoardCard = () => {
     boardId,
     setDataCard,
     handleUpdateComment,
+    setLoading,
+    setUpFileComment,
+    setPostUploadedFiles,
   } = useListBoardContext();
   const { userData } = useStorage();
   const [listLabel, setListLabel] = useState(() => {
@@ -517,14 +521,25 @@ export const BoardCard = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex p-2">
-                <div>
+              <div className="p-2">
+                <div className="flex items-center">
                   <SubjectIcon fontSize="small" />
+                  <p className="text-[16px] ml-2 ">Describe</p>
                 </div>
-                <div className="flex-1 ml-4">
-                  <div className="text-[16px] mb-2">Describe</div>
-                  <div className="bg-gray-200 hover:bg-gray-300 cursor-pointer w-full text-[14px] mb-2 p-2 pb-6 rounded-[4px]">
-                    <div>Add more detailed description...</div>
+                <div className="mt-2">
+                  <div className="cursor-pointer w-full text-[14px] mb-2 rounded-[4px]">
+                    <CardAddDetail
+                      setContent={setContent}
+                      loading={loading}
+                      handleFileChange={handleFileChange}
+                      content={content}
+                      handlePostComment={handlePostComment}
+                      isSaving={isSaving}
+                      listComment={listComment}
+                      formatDate={formatDate}
+                      handleDeleteComment={handleDeleteComment}
+                      handleUpdateComment={handleUpdateComment}
+                    />
                   </div>
                 </div>
               </div>
@@ -552,6 +567,7 @@ export const BoardCard = () => {
                     formatDate={formatDate}
                     loading={loading}
                     handleDeleteFile={handleDeleteFile}
+                    setDataCard={setDataCard}
                   />
                 </div>
               </div>
@@ -699,6 +715,16 @@ export const BoardCard = () => {
                   formatDate={formatDate}
                   handleDeleteComment={handleDeleteComment}
                   handleUpdateComment={handleUpdateComment}
+                  loading={loading}
+                  setLoading={setLoading}
+                  setDataCard={setDataCard}
+                  dataCard={dataCard}
+                  setPostUploadedFiles={setPostUploadedFiles}
+                  setContent={setContent}
+                  content={content}
+                  setUpFileComment={setUpFileComment}
+                  boardId={boardId}
+                  // setPostUploadedFiles={setPostUploadedFiles}
                 />
               ))}
             </div>

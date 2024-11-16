@@ -166,22 +166,106 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         ...prevDataCard,
         comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId),
       }));
-      toast.success("File deleted successfully!");
+      toast.success("Deleted comment successfully!");
     } catch (err) {
       console.error("Error deleting comment:", err);
     }
   };
 
-  const handleUpdateComment = async (cmdId) => {
-    try {
-      const response = await updateComment(boardId, cmdId);
-      setDataCard((prevDataCard) => ({...prevDataCard, comments: prevDataCard.comments.map((comment) => comment.id === cmdId ? response.data : comment)}));
-      toast.success("Comment updated successfully!");
-    } catch (err) {
-      toast.error("Cannot update comment");
-      console.error("Error updating comment:", err);
-    }
-  }
+  // const handleUpdateComment = async (cmdId, content) => {
+  //   try {
+  //     const response = await updateComment(boardId, cmdId, {content});
+  //     setDataCard((prevDataCard) => ({
+  //       ...prevDataCard,
+  //       comments: prevDataCard.comments.map((comment) => (comment.id === cmdId ? response.data : comment)),
+  //     }));
+  //     toast.success("Comment updated successfully!");
+  //   } catch (err) {
+  //     toast.error("Cannot update comment");
+  //     console.error("Error updating comment:", err);
+  //   }
+  // };
+
+  // const handleUpdateComment = async (cmdId, content) => {
+  //   setLoading(true);
+  //   try {
+  //     // Tải lên ảnh mới nếu có
+  //     const parser = new DOMParser();
+  //     const doc = parser.parseFromString(content, "text/html");
+  //     const images = doc.querySelectorAll("img");
+  //     const imageUrls = Array.from(images).map((img) => img.src);
+  
+  //     // Nếu có ảnh mới, tải lên và lấy URL
+  //     if (imageUrls.length > 0) {
+  //       const formData = new FormData();
+  //       for (const url of imageUrls) {
+  //         const response = await fetch(url);
+  //         const blob = await response.blob();
+  //         formData.append("files", blob, "image.jpg");
+  //       }
+  //       const uploadResponse = await apiUploadMultiFile(formData);
+  //       const uploadedImageUrls = uploadResponse.data.map((file) => file.url);
+  
+  //       // Cập nhật nội dung với các URL ảnh đã tải lên
+  //       uploadedImageUrls.forEach((url, index) => {
+  //         content = content.replace(imageUrls[index], url);
+  //       });
+  //     }
+  
+  //     // Cập nhật comment với nội dung mới và danh sách ảnh mới
+  //     const response = await updateComment(boardId, cmdId, { content });
+  //     setDataCard((prevDataCard) => ({
+  //       ...prevDataCard,
+  //       comments: prevDataCard.comments.map((comment) => (comment.id === cmdId ? response.data : comment)),
+  //     }));
+  //     // toast.success("Comment updated successfully!");
+  //     return response;
+  //   } catch (err) {
+  //     toast.error("Cannot update comment");
+  //     console.error("Error updating comment:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const handleUpdateComment = async (cmdId, content) => {
+  //   const parser = new DOMParser();
+  //   const doc = parser.parseFromString(content, "text/html");
+  //   const images = doc.querySelectorAll("img");
+  //   const imageUrls = Array.from(images).map((img) => img.src);
+  //   const params = {
+  //     content: content,
+  //     files: imageUrls,
+  //     cardId: dataCard.id,
+  //   };
+  //   setLoading(true);
+  //   const loadingToastId = toast.loading("Saving...");
+  //   try {
+  //     const response = await updateComment(cmdId, params);
+  //     toast.dismiss(loadingToastId);
+  //     toast.success("Create comment successfully!");
+
+  //     // Cập nhật lại nội dung và các file sau khi bình luận thành công
+  //     setContent("");
+  //     setUpFileComment([]);
+  //     const newComment = response.data;
+
+  //     // Thêm bình luận mới vào danh sách bình luận
+  //     setDataCard((prevDataCard) => ({
+  //       ...prevDataCard,
+  //       comments: [...prevDataCard.comments, newComment],
+  //       files: [...prevDataCard.files, ...newComment.files],
+  //     }));
+  //     // Cập nhật danh sách file đã tải lên từ comment
+  //     setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
+  //   } catch (err) {
+  //     toast.dismiss(loadingToastId);
+  //     toast.error("Cannot create comment");
+  //     console.error("Lỗi khi đăng comment:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   let prevListCountRef = useRef();
   useEffect(() => {
@@ -418,7 +502,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         upFileComment,
         setUpFileComment,
         setIsShowBoardEdit,
-        handleUpdateComment,
+        // handleUpdateComment,
+        setLoading,
       }}
     >
       {children}
