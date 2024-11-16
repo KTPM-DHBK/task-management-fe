@@ -2,8 +2,6 @@ import {
   Person4Outlined as Person4OutlinedIcon,
   Label as LabelIcon,
   AccessTimeOutlined as AccessTimeOutlinedIcon,
-  ArrowForwardOutlined as ArrowForwardOutlinedIcon,
-  ContentCopyOutlined as ContentCopyOutlinedIcon,
   SaveAsOutlined as SaveAsOutlinedIcon,
   BackupTableOutlined as BackupTableOutlinedIcon,
 } from "@mui/icons-material";
@@ -33,16 +31,6 @@ export const listBtnCard = [
     id: 5,
     nameBtn: "Edit date",
     Icon: <AccessTimeOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
-  },
-  {
-    id: 6,
-    nameBtn: "Move",
-    Icon: <ArrowForwardOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
-  },
-  {
-    id: 7,
-    nameBtn: "Copy",
-    Icon: <ContentCopyOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
   },
   {
     id: 8,

@@ -5,7 +5,7 @@ import Calendar from "../../Calendar/index";
 import { updateCard } from "../../../Services/API/ApiCard";
 
 function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRemove }) {
-  const { dataCard, dataList } = useListBoardContext();
+  const { dataCard, dataList, setDataCard } = useListBoardContext();
   const getCurrentTime = () => {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, "0");
@@ -100,6 +100,7 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRe
       };
       endDate(`${hours}:${minutes} ${day}thg${month}`);
       const res = await updateCard(dataCard.id, data);
+      setDataCard((prev) => ({ ...prev, endDate: `${expirationDate}T${expirationTime}` }));
       return res;
     } catch (error) {
       console.error("Error setup expiration date in card detail: ", error);

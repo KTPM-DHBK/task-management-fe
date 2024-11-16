@@ -16,6 +16,7 @@ function CreateLabel({
   inputTitleLabel,
   handleChooseColor,
   handleCreateNewLabel,
+  onUpdateLabel,
 }) {
   const { dataBoard } = useListBoardContext();
   const [listColorLabel, setListColorLabel] = useState([]);
@@ -36,7 +37,12 @@ function CreateLabel({
       <ItemMenu title={"Label"} onClose={handleCloseShowMenuBtnCard} onBack={ShowDetailNewLabel}>
         <div className="flex items-center justify-center bg-gray-100 h-[60px]">
           {chooseColorLabel ? (
-            <div className={`${chooseColorLabel.color} w-[80%] h-[32px] p-2 rounded-[4px]`}>
+            <div
+              style={{
+                backgroundColor: chooseColorLabel.color,
+              }}
+              className={`w-[80%] h-[32px] p-2 rounded-[4px]`}
+            >
               <font>{inputTitleLabel}</font>
             </div>
           ) : (
@@ -65,7 +71,10 @@ function CreateLabel({
                     <li
                       onClick={() => handleChooseColor(item)}
                       key={index}
-                      className={`w-12 h-8 ${item.color} rounded-[4px] mr-1 mb-1 ${chooseColorLabel.id === item.id && "border-[3px] border-gray-500 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"}`}
+                      style={{
+                        backgroundColor: item.color,
+                      }}
+                      className={`w-12 h-8 rounded-[4px] mr-1 mb-1 ${chooseColorLabel.id === item.id && "border-[3px] border-gray-500 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"}`}
                     ></li>
                   ))
                 : null}
@@ -92,7 +101,7 @@ function CreateLabel({
           ) : (
             <div className="flex items-center justify-between mt-4">
               <ButtonBoardCard
-                onHandleEvent={() => handleCreateNewLabel(chooseColorLabel, inputTitleLabel)}
+                onHandleEvent={() => onUpdateLabel(chooseColorLabel, inputTitleLabel)}
                 nameBtn="Save"
                 isActive={true}
                 className={"w-[100px] bg-blue-500 justify-center text-white hover:opacity-90"}

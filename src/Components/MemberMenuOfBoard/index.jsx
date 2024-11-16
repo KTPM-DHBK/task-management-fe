@@ -6,7 +6,8 @@ import ItemMember from "./ItemMember";
 import { RemoveUserToCard } from "../../Services/API/ApiCard";
 
 const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
-  const { position, membersInCard, membersBoard, dataCard, setDataCard } = useListBoardContext();
+  const { position, membersInCard, membersBoard, dataCard, setDataCard } =
+    useListBoardContext();
   const [inputTitle, setInputTitle] = useState("");
   const [filteredMembersBoard, setFilteredMembersBoard] = useState([]);
 
@@ -25,14 +26,14 @@ const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
       try {
         await RemoveUserToCard(dataCard?.id, member.id);
       } catch (error) {
-        console.log("error handle remove member in card", error);
+        console.error("error handle remove member in card", error);
       }
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        members: [...(prevDataCard.members || []), member],
+        members: [...(prevDataCard.members || []), member]
       }));
     },
-    [dataCard, setDataCard],
+    [dataCard, setDataCard]
   );
 
   useEffect(() => {
@@ -81,7 +82,11 @@ const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
             <>
               <div className="py-2 bg-white">Members of the board</div>
               {filteredMembersBoard?.map((item, index) => (
-                <ItemMember key={index} item={item} onHandleAddMember={HandleAddMemberInCard} />
+                <ItemMember
+                  key={index}
+                  item={item}
+                  onHandleAddMember={HandleAddMemberInCard}
+                />
               ))}
             </>
           )}

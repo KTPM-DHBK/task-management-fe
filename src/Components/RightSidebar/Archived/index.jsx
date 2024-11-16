@@ -13,7 +13,7 @@ export default function Archived() {
         setArchivedCards(res);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       })
       .finally(() => setIsFetching(false));
   }, []);
@@ -30,8 +30,8 @@ export default function Archived() {
                   paddingY: "6px",
                   paddingLeft: "12px",
                   paddingRight: "18px",
-                  fontSize: "14px",
-                },
+                  fontSize: "14px"
+                }
               }}
               placeholder="Search archive..."
             />
@@ -47,8 +47,8 @@ export default function Archived() {
               boxShadow: "none",
               "&:hover": {
                 bgcolor: "#091E4224", // Màu nền khi hover
-                boxShadow: "none",
-              },
+                boxShadow: "none"
+              }
             }}
           >
             Switch to list

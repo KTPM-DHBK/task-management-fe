@@ -11,5 +11,6 @@ export const EQueryKeys = {
   GET_BOARD_WORKSPACE: "getBoardWorkspace",
   //BOARD
   GET_ALL_BOARD: "getAllBoard",
-  GET_BOARD_PERMISSION: "getBoardPermission"
+  GET_BOARD_PERMISSION: "getBoardPermission",
+  GET_BOARD_ROLE: "getBoardRole"
 };

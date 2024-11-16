@@ -30,7 +30,7 @@ function AddLabelInCard({
         <div className="mt-2">
           <div className="py-2 bg-white">Label</div>
           <ul>
-            {listLabel.map((item, index) => (
+            {listLabel?.map((item, index) => (
               <li key={index} className="flex items-center my-2 cursor-pointer">
                 <input
                   checked={countLabel.some((i) => i.id === item.id)}
@@ -41,7 +41,10 @@ function AddLabelInCard({
                 <span className="flex items-center w-full">
                   <div
                     onClick={() => handleAddLabel(item)}
-                    className={`flex-1 hover:opacity-90 ${item.color} h-[34px] p-2 rounded-[4px] transition-all duration-50`}
+                    style={{
+                      backgroundColor: item.color,
+                    }}
+                    className={`flex-1 hover:opacity-90 h-[34px] p-2 rounded-[4px] transition-all duration-50`}
                   >
                     <font>{item.name}</font>
                   </div>

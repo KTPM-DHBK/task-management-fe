@@ -1,13 +1,44 @@
-import { Button, Divider, Slide, TextField } from "@mui/material";
+import { Button, CircularProgress, Divider, Slide, TextField } from "@mui/material";
 import HeadlessTippy from "@tippyjs/react/headless";
 import LabelEditor from "./LabelEditor";
-import { useState } from "react";
-import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import { useEffect, useState } from "react";
+import { createTag, getTags } from "../../../Services/API/APITags";
+import { useParams } from "react-router-dom";
+import LabelItem from "./LabelItem";
+import { toast } from "react-toastify";
 
 export default function LabelMenu() {
-  const [creatorPopper, setCreatorPopper] = useState(false);
+  const [tags, setTags] = useState([]);
 
+  const [creatorPopper, setCreatorPopper] = useState(false);
   const handleOpenCloseCreator = () => setCreatorPopper(!creatorPopper);
+  const { idBoard } = useParams();
+  const [isFetching, setIsFetching] = useState(true);
+
+  const handleCreateTag = (data) => {
+    setCreatorPopper(false);
+    createTag({ boardId: Number(idBoard), name: data.title, color: data.choosedColor })
+      .then((res) => {
+        toast.success("Create tag successfully");
+        setTags((prev) => [...prev, res]);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Create tag unsuccessfully");
+      });
+  };
+
+  useEffect(() => {
+    getTags(idBoard)
+      .then((res) => {
+        if (res.data) setTags(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => setIsFetching(false));
+  }, [idBoard]);
+
   return (
     <Slide in={true} direction="left">
       <div className="flex flex-col">
@@ -23,40 +54,27 @@ export default function LabelMenu() {
           }}
           placeholder="Search labels..."
         />
-        <span className="mt-3 mb-2 text-xs font-semibold text-[var(--dark-slate-blue)]">Labels</span>
-        <ul className="pt-1 pb-2">
-          <li className="mb-1">
-            <div className="flex h-8 gap-1">
-              <span
-                style={{ backgroundColor: "#1F845A" }}
-                className="flex-1 leading-8 px-3 rounded cursor-pointer hover:opacity-[0.9]"
-              >
-                Backend
-              </span>
-              <button className="w-8 h-8 rounded hover:bg-[var(--hover-background)] flex items-center justify-center">
-                <ModeEditOutlineOutlinedIcon fontSize="inherit" />
-              </button>
-            </div>
-          </li>
-          <li className="mb-1">
-            <div className="flex h-8 gap-1">
-              <span
-                style={{ backgroundColor: "#1F845A" }}
-                className="flex-1 leading-8 px-3 rounded cursor-pointer hover:opacity-[0.9]"
-              >
-                Backend
-              </span>
-              <button className="w-8 h-8 rounded hover:bg-[var(--hover-background)] flex items-center justify-center">
-                <ModeEditOutlineOutlinedIcon fontSize="inherit" />
-              </button>
-            </div>
-          </li>
-        </ul>
+        {isFetching && (
+          <div className="flex justify-center mt-3 mb-2">
+            <CircularProgress size={20} />
+          </div>
+        )}
+        {tags.length > 0 && (
+          <>
+            <span className="mt-3 mb-2 text-xs font-semibold text-[var(--dark-slate-blue)]">Labels</span>
+
+            <ul className="pt-1 pb-2">
+              {tags.map((tag, index) => (
+                <LabelItem key={index} data={tag} setTags={setTags} />
+              ))}
+            </ul>
+          </>
+        )}
         <HeadlessTippy
           onClickOutside={handleOpenCloseCreator}
           interactive
           visible={creatorPopper}
-          render={() => <LabelEditor onClose={handleOpenCloseCreator} />}
+          render={() => <LabelEditor onSubmit={handleCreateTag} onClose={handleOpenCloseCreator} />}
           placement="left"
         >
           <Button

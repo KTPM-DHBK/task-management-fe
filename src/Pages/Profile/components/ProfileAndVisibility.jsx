@@ -39,7 +39,7 @@ export const ProfileAndVisibility = () => {
         toast.success("Update profile successfully");
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast.error("Update profile unsuccessfully");
       })
       .finally(() => setIsFetching(false));

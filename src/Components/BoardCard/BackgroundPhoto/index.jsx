@@ -71,8 +71,9 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
+                backgroundColor: background && background.startsWith("#") ? background : "#f3f4f6",
               }}
-              className={`w-full h-[54px] p-2 rounded-t-[4px] ${background && background.startsWith("bg-") ? background : "bg-gray-100"}`}
+              className={`w-full h-[54px] p-2 rounded-t-[4px]`}
             />
 
             <div className="w-[90%]">
@@ -104,7 +105,12 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
                   <li
                     onClick={() => handleChooseColor(item.color)}
                     key={index}
-                    className={`w-12 h-8 ${item.color} cursor-pointer rounded-[4px] mr-1 mb-1 ${background != null ? (background === item.color ? "border-[3px] border-blue-400 shadow-[0_3px_10px_rgba(0,0,0,0.3)]" : "") : ""}`}
+                    style={{
+                      backgroundColor: item.color,
+                      border: background === item.color ? "3px solid #60a5fa" : "none",
+                      boxShadow: background === item.color ? "0 3px 10px rgba(0,0,0,0.3)" : "none",
+                    }}
+                    className={`w-12 h-8 cursor-pointer rounded-[4px] mr-1 mb-1`}
                   ></li>
                 ))
               : null}

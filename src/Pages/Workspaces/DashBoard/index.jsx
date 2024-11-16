@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { useGetWorkspaceByUser, useGetWorkspaceById } from "../../../Hooks";
 import Loading from "../../../Components/Loading";
 import ClosedBoarDialog from "./ClosedBoard";
+import { getArchivedBoards } from "../../../Services/API/ApiBoard/apiBoard";
 
 const DashBoard = () => {
   const [listBoard, setListBoard] = useState([]);
@@ -16,15 +17,26 @@ const DashBoard = () => {
   const { workspaceDetails, isLoading: isLoadingCurrentWorkspace } = useGetWorkspaceById(id);
   const { workspaceInfo, isLoading: isLoadingWorkspace } = useGetWorkspaceByUser();
   const [openClosedBoard, setOpenClosedBoard] = useState(false);
+  const [archivedBoards, setArchivedBoards] = useState([]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleOpenClosedBoard = () => setOpenClosedBoard(!openClosedBoard);
+  const role = workspaceInfo?.find((item) => item.id === Number(id))?.role;
 
+  const handleOpenClosedBoard = () => setOpenClosedBoard(!openClosedBoard);
   useEffect(() => {
+    getArchivedBoards(id)
+      .then((res) => {
+        setArchivedBoards(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
     if (Array.isArray(workspaceDetails?.boards)) setListBoard(workspaceDetails?.boards);
   }, [workspaceDetails?.boards, id]);
+
   if (!workspaceInfo?.length) {
     return <div className="text-xl font-semibold">LOOK LIKE YOU DON'T HAVE ANY WORKSPACE YET!</div>;
   }
@@ -53,16 +65,24 @@ const DashBoard = () => {
           </button>
           <CreateNewBoard open={open} handleClose={handleClose} />
         </div>
-        <div className="my-12">
-          <button
-            onClick={handleOpenClosedBoard}
-            className="p-2 text-sm font-semibold rounded-md bg-hoverBackground text-textColor"
-          >
-            View closed boards
-          </button>
-        </div>
+        {archivedBoards.length > 0 && role === "owner" && (
+          <div className="my-12">
+            <button
+              onClick={handleOpenClosedBoard}
+              className="p-2 text-sm font-semibold rounded-md bg-hoverBackground text-textColor"
+            >
+              View closed boards
+            </button>
+          </div>
+        )}
 
-        <ClosedBoarDialog open={openClosedBoard} onClose={handleOpenClosedBoard} />
+        <ClosedBoarDialog
+          open={openClosedBoard}
+          onClose={handleOpenClosedBoard}
+          boards={archivedBoards}
+          workspaceName={workspaceDetails?.title}
+          setArchivedBoards={setArchivedBoards}
+        />
       </div>
     </div>
   );

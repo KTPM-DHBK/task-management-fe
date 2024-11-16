@@ -4,22 +4,22 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useGetAllBoards } from "../../../Hooks";
 import Loading from "../../Loading";
 import StarIcon from "@mui/icons-material/Star";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Stared() {
   const navigate = useNavigate();
-  const { id: workspaceId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleItemClick = (e, boardId) => {
+  const handleItemClick = (e, boardId, workspaceId) => {
     e.stopPropagation();
+    console.log(`/workspace/${workspaceId}/board/${boardId}`);
     navigate(`/workspace/${workspaceId}/board/${boardId}`);
   };
 
   const { boardData, isLoading, isFetching } = useGetAllBoards();
 
   const starredBoard = useMemo(
-    () => boardData?.data.filter((board) => board.isFavorite),
+    () => boardData?.data.filter((board) => board.isFavorite) || [],
     [boardData]
   );
 
@@ -45,7 +45,9 @@ export default function Stared() {
                     <div
                       key={index}
                       className="px-2 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200"
-                      onClick={(e) => handleItemClick(e, board.id)}
+                      onClick={(e) =>
+                        handleItemClick(e, board.id, board.workspaceId)
+                      }
                     >
                       <div className="flex items-center justify-between gap-2 text-base">
                         <div className="flex items-center gap-2">

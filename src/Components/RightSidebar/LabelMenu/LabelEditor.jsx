@@ -3,14 +3,38 @@ import Wrapper from "../../Wrapper";
 import { Button, Divider, TextField } from "@mui/material";
 import { useState } from "react";
 import { colors } from "./constant";
+import { contrastTextColor } from "../../../Utils/color";
 
-export default function LabelEditor({ onClose }) {
-  const [choosedColor, setChoosedColor] = useState("");
-  const [title, setTitle] = useState("");
+export default function LabelEditor({ onClose, onSubmit, color, nameTag, onDelete }) {
+  const [choosedColor, setChoosedColor] = useState(color || "");
+  const [title, setTitle] = useState(nameTag || "");
 
   const handleClose = (e) => {
+    if (!color && !nameTag) {
+      setTitle("");
+      setChoosedColor("");
+    } else {
+      setTitle(nameTag);
+      setChoosedColor(color);
+    }
     if (onClose) return onClose(e);
   };
+
+  const handleSubmit = () => {
+    if (onSubmit) {
+      onSubmit({ choosedColor, title });
+      if (!color || !nameTag) {
+        setChoosedColor("");
+        setTitle("");
+      }
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete) return onDelete();
+  };
+
+  const textColor = contrastTextColor(choosedColor);
   return (
     <Wrapper>
       <div className="w-[304px]">
@@ -28,6 +52,7 @@ export default function LabelEditor({ onClose }) {
             style={{
               backgroundColor: choosedColor || "#091E420F",
               transition: "all 0.2s ease",
+              color: textColor,
             }}
             className="h-8 w-full px-3 rounded leading-8 font-semibold"
           >
@@ -98,9 +123,26 @@ export default function LabelEditor({ onClose }) {
           </Button>
 
           <Divider element="div" sx={{ marginY: 2 }} />
-          <Button disabled={!choosedColor} variant="contained" sx={{ textTransform: "none", paddingY: 0.5 }}>
-            Create
-          </Button>
+          <div className="flex justify-between">
+            <Button
+              onClick={handleSubmit}
+              disabled={!choosedColor || (choosedColor === color && title === nameTag)}
+              variant="contained"
+              sx={{ textTransform: "none", paddingY: 0.5 }}
+            >
+              {color ? "Save" : "Create"}
+            </Button>
+            {onDelete && (
+              <Button
+                onClick={handleDelete}
+                variant="contained"
+                color="error"
+                sx={{ textTransform: "none", paddingY: 0.5 }}
+              >
+                Delete
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </Wrapper>

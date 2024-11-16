@@ -1,4 +1,4 @@
-import { Autocomplete } from "@mui/material";
+import { Autocomplete, Avatar } from "@mui/material";
 import { TextField } from "@mui/material";
 import { useState } from "react";
 import { useDebounce, useGetUser } from "../../Hooks";
@@ -16,7 +16,7 @@ export const SearchMember = (
   const debounceSearchMember = useDebounce(searchMember, 500);
 
   const { userInfo, isLoading } = useGetUser({
-    name: debounceSearchMember
+    search: debounceSearchMember
   });
 
   useEffect(() => {
@@ -27,7 +27,6 @@ export const SearchMember = (
   return (
     <div className="flex flex-col gap-1">
       <div className="font-bold">Workspace members</div>
-      {!searchOptions.length && isLoading && <Loading />}
       <Autocomplete
         {...register}
         onChange={onChange}
@@ -35,13 +34,40 @@ export const SearchMember = (
         options={searchOptions}
         getOptionLabel={(option) => option.name}
         getOptionKey={(option) => option.id}
+        blurOnSelect={false}
         filterSelectedOptions
+        disableCloseOnBlur
+        noOptionsText={
+          isLoading ? (
+            <div className="h-10">
+              <Loading size={20} />
+            </div>
+          ) : (
+            "No options"
+          )
+        }
         onInputChange={(_, newInputValue) => {
           setSearchMember(newInputValue);
         }}
         renderInput={(params) => (
           <TextField {...params} placeholder="Find members" />
         )}
+        renderOption={(props, option) =>
+          !searchOptions.length && isLoading ? (
+            <Loading />
+          ) : (
+            <li {...props}>
+              <div className="flex items-center">
+                <Avatar
+                  src={option.avatarUrl}
+                  sx={{ width: 20, height: 20 }}
+                  alt={option.name?.[0]}
+                ></Avatar>
+                <div className="ml-2">{option.name}</div>
+              </div>
+            </li>
+          )
+        }
       />
       {isShowDescription && (
         <div>

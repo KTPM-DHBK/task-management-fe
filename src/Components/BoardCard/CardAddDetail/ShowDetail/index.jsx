@@ -9,12 +9,9 @@ import { Link } from "react-router-dom";
 
 const ShowDetail = ({
   item,
-  formatDate,
   handleDeleteComment,
   handleUpdateComment,
-  isFocused,
-  handleFocus,
-  handleCloseComment,
+
 }) => {
   // const { userData } = useStorage();
   //eslint-disable-next-line

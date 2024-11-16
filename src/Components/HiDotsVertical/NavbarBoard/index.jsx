@@ -4,7 +4,10 @@ import ItemMenu from "../../ItemMenu";
 import { useState } from "react";
 import BoardMemberModal from "../../Modals/BoardMemberModal";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
-import { deleteBoardId, leaveBoard } from "../../../Services/API/ApiBoard/apiBoard";
+import {
+  deleteBoardId,
+  leaveBoard
+} from "../../../Services/API/ApiBoard/apiBoard";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../../constants";
@@ -13,7 +16,7 @@ import { toast } from "react-toastify";
 function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
   const [memberPopup, setMemberPopup] = useState(false);
   const { dataBoard } = useListBoardContext();
-  const { idBoard, idWorkSpace } = useParams();
+  const { idBoard, id } = useParams();
   const [leaving, setLeaving] = useState(false);
 
   const queryClient = useQueryClient();
@@ -27,13 +30,13 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
       deleteBoardId(idBoard)
         .then((res) => {
           queryClient.invalidateQueries({
-            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
+            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID]
           });
           toast.success("Close board successfully");
-          return navigate(`/workspace/${idWorkSpace}/home`);
+          return navigate(`/workspace/${id}/home`);
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           toast.error("Close board not successfully");
         })
         .finally(() => {
@@ -45,11 +48,11 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
         .then((res) => {
           //* Gọi lại API get board từ useQuery để reload lại giao diện
           queryClient.invalidateQueries({
-            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
+            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID]
           });
           //! chưa load lại được dữ liệu mới ở trang home workspace
           toast.success("Leave board successfully");
-          return navigate(`/workspace/${idWorkSpace}/home`);
+          return navigate(`/workspace/${id}/home`);
         })
         .catch((err) => {
           toast.error("Leave board not successfully");
@@ -66,7 +69,11 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
           className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer"
           onClick={toggleCollape}
         >
-          <div>{dataBoard?.role?.roleName === "admin" ? "Close board" : "Leave board"}</div>
+          <div>
+            {dataBoard?.role?.roleName === "admin"
+              ? "Close board"
+              : "Leave board"}
+          </div>
           <ChevronRightIcon fontSize="small" />
         </div>
         <div
@@ -82,7 +89,11 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
       </div>
       {isChooseMoveList && (
         <ItemMenu
-          title={dataBoard.role?.roleName === "admin" ? "Close this board" : "Do you want to leave the board?"}
+          title={
+            dataBoard.role?.roleName === "admin"
+              ? "Close this board"
+              : "Do you want to leave the board?"
+          }
           description={
             dataBoard.role?.roleName === "admin"
               ? "You can find and reopen closed boards at the bottom of your boards page."

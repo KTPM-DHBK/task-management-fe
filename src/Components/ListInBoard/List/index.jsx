@@ -8,20 +8,25 @@ import ItemList from "../../../Components/ItemList";
 import TippyDetail from "../../TippyDetail";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
-import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { UpdateList } from "../../../Services/API/ApiListOfBoard";
+import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
 
 function List({ item = {}, id }) {
   const cards = item.cards || [];
 
   const { attributes, listeners, setNodeRef, transform } = useSortable({
     id: id,
-    data: { ...item, type: "column" },
+    data: { ...item, type: "column" }
   });
   const dndKitColumStyles = {
     transform: CSS.Translate.toString(transform),
-    height: "100%",
+    height: "100%"
   };
 
   let {
@@ -32,15 +37,16 @@ function List({ item = {}, id }) {
     handleChange,
     handleShowAddCard,
     handleAddCard,
-    handleChangeTitleCard,
+    handleChangeTitleCard
   } = useListBoardContext();
+  const { getCardPermissionByUser } = useGetBoardPermission(boardId);
 
   const handleClickOutside = async (event) => {
     if (event.target.value) {
       const dataList = {
         title: event.target.value.trim(),
         description: item?.description,
-        boardId: boardId,
+        boardId: boardId
       };
       try {
         await UpdateList(boardId, id, dataList);
@@ -61,7 +67,9 @@ function List({ item = {}, id }) {
               onBlur={(e) => handleClickOutside(e)}
               className="flex-1 min-w-0 mr-2 bg-gray-100 rounded-[8px] text-[14px] font-[600] px-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {activeMonitor.includes(item.id) && <RemoveRedEyeOutlinedIcon className="p-1" />}
+            {activeMonitor.includes(item.id) && (
+              <RemoveRedEyeOutlinedIcon className="p-1" />
+            )}
             <ConvertHiDotsVertical
               tippyName="Operation"
               data={item}
@@ -101,19 +109,19 @@ function List({ item = {}, id }) {
             />
           )}
 
-          {!item.isShowAddCard && (
+          {getCardPermissionByUser("create") && !item.isShowAddCard && (
             <div className="flex p-1 items-center pt-[8px]">
               <div
                 onClick={() => handleShowAddCard(item.id)}
                 className="flex flex-1 items-center rounded-[8px] hover:bg-gray-300 cursor-pointer"
               >
-                <div className="p-2 transition-opacity duration-300">
+                <div className="p-2 transition-opacity duration-300 text-[#44546f]">
                   <AddIcon width={16} height={16} />
                 </div>
-                <div className="text-[14px] font-medium">Add card</div>
+                <div className="text-[14px] font-medium text-[#44546f]">Add card</div>
               </div>
               <TippyDetail title={"Create from template..."}>
-                <div>
+                <div className="text-[#44546f]">
                   <TemplateCardIcon
                     width={32}
                     height={32}

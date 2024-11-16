@@ -28,6 +28,8 @@ import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import ChangeBackgroundMenu from "./ChangeBackgroundMenu";
 import { memo } from "react";
 import LabelMenu from "./LabelMenu";
+import About from "./About";
+import Activities from "./Activities";
 
 const cx = classNames.bind(styles);
 
@@ -43,10 +45,18 @@ function RightSidebar({ isOpen, onClose }) {
       {
         title: "About this board",
         icon: <ErrorOutlineIcon sx={{ fontSize: sizeIcon }} />,
+        children: {
+          headerTitle: "About",
+          component: <About />,
+        },
       },
       {
         title: "Activity",
         icon: <ListIcon sx={{ fontSize: sizeIcon }} />,
+        children: {
+          headerTitle: "Activity",
+          component: <Activities />,
+        },
       },
       {
         title: "Archived Items",
@@ -81,6 +91,7 @@ function RightSidebar({ isOpen, onClose }) {
       {
         title: "Power-Ups",
         icon: <RocketLaunchIcon sx={{ fontSize: sizeIcon }} />,
+        disable: true,
       },
       {
         title: "Labels",
@@ -94,18 +105,22 @@ function RightSidebar({ isOpen, onClose }) {
       {
         title: "Watch",
         icon: <RemoveRedEyeOutlinedIcon sx={{ fontSize: sizeIcon }} />,
+        disable: true,
       },
       {
         title: "Coppy board",
         icon: <ContentCopyIcon sx={{ fontSize: sizeIcon }} />,
+        disable: true,
       },
       {
         title: "Email to board",
         icon: <MailOutlineIcon sx={{ fontSize: sizeIcon }} />,
+        disable: true,
       },
       {
         title: "Print,export and share",
         icon: <ShareIcon sx={{ fontSize: sizeIcon }} />,
+        disable: true,
       },
       {
         title: isOwner ? "Close board" : "Leave this board",
@@ -163,7 +178,7 @@ function RightSidebar({ isOpen, onClose }) {
       };
       return (
         <div key={index}>
-          <MenuItem onChange={handleChange} icon={item?.icon}>
+          <MenuItem disable={item.disable} onChange={handleChange} icon={item?.icon}>
             {item.title}
           </MenuItem>
           {item.divide && (
@@ -250,7 +265,7 @@ function RightSidebar({ isOpen, onClose }) {
           <Divider component={"div"} />
         </div>
 
-        <div className="flex flex-col gap-1 px-3 pt-3 pb-2">{renderItems()}</div>
+        <div className="flex flex-col gap-1 px-3 pt-3 pb-2 overflow-y-scroll overflow-x-hidden">{renderItems()}</div>
       </div>
 
       {/* //TODO  Bật lên popup rời khỏi board  */}

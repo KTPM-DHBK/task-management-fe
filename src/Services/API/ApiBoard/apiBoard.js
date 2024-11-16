@@ -86,3 +86,23 @@ export async function addMemberIntoBoard(userId, boardId) {
 export async function updateBoard(boardId, data) {
   return await request.patch(`/board/${boardId}`, data);
 }
+
+export async function getActivities(boardId) {
+  const response = await request.get(`/board/${boardId}/activities`);
+  return response?.data;
+}
+
+export async function getArchivedBoards(workspaceId) {
+  const response = await request.get(`board/archived/${workspaceId}`);
+  return response?.data;
+}
+
+export async function reOpenBoard(boardId) {
+  const response = await request.post(`/board/${boardId}/reopen`);
+  return response?.data;
+}
+
+export async function destroyBoard(boardId) {
+  const response = await request.delete(`/board/${boardId}/destroy`);
+  return response?.data;
+}

@@ -3,16 +3,14 @@ import request from "./API/request";
 const baseURL = process.env.REACT_APP_API_URL + "/user";
 
 class UserServices {
-  createUser(userData) {}
-
-  async getUser({ limit, page, name }) {
+  async getUser({ limit, page, search }) {
     const response = await request({
       method: "GET",
       baseURL,
       params: {
         ...(limit && { limit }),
         ...(page && { page }),
-        ...(name && { name })
+        ...(search && { search })
       }
     });
     return response.data;
