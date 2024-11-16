@@ -1,16 +1,30 @@
-import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
+import {
+  createCardByIdList,
+  getAllCardByIdList
+} from "../../../Services/API/ApiCard";
 import {
   getAllMembersByIdBoard,
   getBoardId,
   getWorkspaceById,
-  updateBoard,
+  updateBoard
 } from "../../../Services/API/ApiBoard/apiBoard";
-import { apiAssignFile, apiDeleteFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
+import {
+  apiAssignFile,
+  apiDeleteFile,
+  apiUploadMultiFile
+} from "../../../Services/API/ApiUpload/apiUpload";
 import { deleteComment, postComment } from "../../../Services/API/ApiComment";
 
 const ListBoardContext = createContext();
@@ -103,7 +117,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         console.error("Failed to get uploaded files:", error);
       }
     },
-    [setPostUploadedFiles],
+    [setPostUploadedFiles]
   );
 
   const handleDeleteFile = async (fileId) => {
@@ -111,7 +125,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       await apiDeleteFile(dataCard.id, fileId);
       setDataCard((prev) => ({
         ...prev,
-        files: prev.files.filter((file) => file.id !== fileId),
+        files: prev.files.filter((file) => file.id !== fileId)
       }));
       setPostUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
       toast.success("File deleted successfully!");
@@ -139,7 +153,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     const params = {
       content: content,
       files: imageUrls,
-      cardId: dataCard.id,
+      cardId: dataCard.id
     };
     setLoading(true);
     const loadingToastId = toast.loading("Saving...");
@@ -157,7 +171,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       // Thêm bình luận mới vào danh sách bình luận
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        comments: [...prevDataCard.comments, newComment],
+        comments: [...prevDataCard.comments, newComment]
       }));
     } catch (err) {
       toast.dismiss(loadingToastId);
@@ -173,7 +187,9 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       await deleteComment(boardId, cmdId);
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId),
+        comments: prevDataCard.comments.filter(
+          (comment) => comment.id !== cmdId
+        )
       }));
       toast.success("File deleted successfully!");
     } catch (err) {
@@ -185,12 +201,15 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   useEffect(() => {
     const fetchBoardData = async () => {
       try {
+        setLoading(true);
         const resWorkspace = await getWorkspaceById(idWorkSpace);
-        if (!resWorkspace || resWorkspace.error) return navigate(`/workspace/${idWorkSpace}/home`);
+        if (!resWorkspace || resWorkspace.error)
+          return navigate(`/workspace/${idWorkSpace}/home`);
         setDataWorkspace(resWorkspace?.data);
 
         const resBoard = await getBoardId(boardId);
-        if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
+        if (!resBoard || resBoard.error)
+          return navigate(`/workspace/${idWorkSpace}/home`);
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -199,13 +218,18 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
           return { ...list, cards };
         });
         const updatedLists = await Promise.all(listWithCardsPromises);
-        if (JSON.stringify(updatedLists) !== JSON.stringify(prevListCountRef.current)) {
+        if (
+          JSON.stringify(updatedLists) !==
+          JSON.stringify(prevListCountRef.current)
+        ) {
           setListCount(updatedLists);
         }
         prevListCountRef.current = updatedLists;
       } catch (err) {
         console.error("Error fetching board data: ", err);
         navigate(`/workspace/${idWorkSpace}/home`);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -215,11 +239,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   useEffect(() => {
     const getAllUserInBoard = async () => {
       try {
+        setLoading(true);
         const res = await getAllMembersByIdBoard(boardId);
         const dataUser = res.data;
         setMembersBoard(dataUser);
       } catch (err) {
         console.error("Error get all user data in board: ", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -237,7 +264,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setDataCard(dataCard);
       setMembersInCard(dataCard?.members);
     },
-    [isShowBoardCard, isShowBoardEdit],
+    [isShowBoardCard, isShowBoardEdit]
   );
 
   const handleShowBoardEdit = useCallback(
@@ -249,14 +276,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setIsShowBoardEdit(!isShowBoardEdit);
       setPostUploadedFiles([...dataCard.files]);
     },
-    [isShowBoardEdit],
+    [isShowBoardEdit]
   );
 
   const handleShowAddCard = (idList) => {
     setActiveIndex(idList);
     const newList = listCount.map((list) => ({
       ...list,
-      isShowAddCard: list.id === idList ? !list.isShowAddCard : false,
+      isShowAddCard: list.id === idList ? !list.isShowAddCard : false
     }));
     setListCount(newList);
   };
@@ -302,7 +329,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         coverUrl: "",
         priority: "medium",
         tagId: "",
-        listId: idList,
+        listId: idList
       };
       try {
         const res = await createCardByIdList(dataSend);
@@ -311,7 +338,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         console.error("Failed to create card by id list:", error);
       }
     },
-    [listCount],
+    [listCount]
   );
 
   const handleAddList = async (newData) => {
@@ -319,7 +346,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       const newListItem = {
         title: newData.title.trim(),
         description: "",
-        boardId: dataBoard.id,
+        boardId: dataBoard.id
       };
 
       try {
@@ -400,7 +427,9 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         uploadedFiles,
         setUploadedFiles,
         handleFileChange,
-        postUploadedFiles: postUploadedFiles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+        postUploadedFiles: postUploadedFiles.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        ),
         setPostUploadedFiles,
         handlePostFiles,
         loading,
@@ -415,9 +444,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         idWorkSpace,
         upFileComment,
         setUpFileComment,
-        // handleFileCommentChange,s
         setIsShowBoardEdit,
-        setDataBoard,
+        setDataBoard
       }}
     >
       {children}

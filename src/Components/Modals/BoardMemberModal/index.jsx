@@ -43,7 +43,7 @@ function BoardMemberModal({ open = false, onClose }) {
     delete newMember.isExisted;
     newMember.role = {
       id: 3,
-      name: "member",
+      name: "member"
     };
     setMembers((prev) => [...prev, newMember]);
   };
@@ -61,7 +61,9 @@ function BoardMemberModal({ open = false, onClose }) {
         .then((res) => res.data)
         .then((data) => {
           const users = data.data.map((user) => {
-            user.isExisted = members.find((item) => item.id === user.id) ? true : false;
+            user.isExisted = members.find((item) => item.id === user.id)
+              ? true
+              : false;
             return user;
           });
           setSearchResult(users);
@@ -84,6 +86,7 @@ function BoardMemberModal({ open = false, onClose }) {
       })
       .then((data) => {
         data = data.filter((item) => item.user !== null);
+
         let members = data.map((item) => {
           item.user.role = item.role;
           return item.user;
@@ -106,11 +109,14 @@ function BoardMemberModal({ open = false, onClose }) {
       sx={{
         "& .MuiDialog-paper": {
           height: "100%",
-          borderRadius: 3,
-        },
+          borderRadius: 3
+        }
       }}
     >
-      <DialogTitle width={"600px"} sx={{ textAlign: "center", color: "#172b4d" }}>
+      <DialogTitle
+        width={"600px"}
+        sx={{ textAlign: "center", color: "#172b4d" }}
+      >
         Members on board
         <button
           onClick={handleClose}
@@ -123,7 +129,14 @@ function BoardMemberModal({ open = false, onClose }) {
         {members.map((item, index) => {
           const disable = item.id === userData.id;
 
-          return <MemberItem disabelRemove={disable} onDeleted={handleRemoveSuccess} key={index} data={item} />;
+          return (
+            <MemberItem
+              disabelRemove={disable}
+              onDeleted={handleRemoveSuccess}
+              key={index}
+              data={item}
+            />
+          );
         })}
 
         <div className="px-3">
@@ -138,7 +151,11 @@ function BoardMemberModal({ open = false, onClose }) {
                 <div className="bg-white w-[600px] p-5">
                   <div className="shadow-lg border border-solid border-slate-200 rounded-md p-5">
                     {searchResult.map((item, index) => (
-                      <UserItem onAdded={handleAddSuccess} data={item} key={index} />
+                      <UserItem
+                        onAdded={handleAddSuccess}
+                        data={item}
+                        key={index}
+                      />
                     ))}
                   </div>
                 </div>
@@ -155,8 +172,8 @@ function BoardMemberModal({ open = false, onClose }) {
                       paddingY: "8px",
                       paddingX: "12px",
                       fontSize: "14px",
-                      fontWeight: 400,
-                    },
+                      fontWeight: 400
+                    }
                   }}
                 />
               </div>
@@ -175,6 +192,6 @@ function BoardMemberModal({ open = false, onClose }) {
 
 BoardMemberModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };
 export default memo(BoardMemberModal);
