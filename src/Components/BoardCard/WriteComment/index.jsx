@@ -4,13 +4,16 @@ import { useStorage } from "../../../Contexts";
 import { useGetUserProfile } from "../../../Hooks";
 import { Editor } from "@tinymce/tinymce-react";
 import { writeInit } from "./constants/Write.constant";
+import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
-const editorKey = process.env.REACT_APP_EDITOR_KEY;
+// const editorKey = process.env.REACT_APP_EDITOR_KEY;ss
 
-const WriteComment = ({ content, setContent, loading, handlePostComment }) => {
+const WriteComment = () => {
   const { userData, isLoggedIn } = useStorage();
   const { userProfile } = useGetUserProfile(isLoggedIn);
   const [isFocused, setIsFocused] = useState(false);
+
+  const { loading, setContent, content, handlePostComment } = useListBoardContext();
 
   const handleCloseComment = () => {
     setIsFocused(false);
@@ -51,7 +54,7 @@ const WriteComment = ({ content, setContent, loading, handlePostComment }) => {
             <div className="w-[428px] h-full">
               {isFocused ? (
                 <Editor
-                  apiKey={editorKey}
+                  apiKey="qibz0pdsl3j3pwij2g3sw1414jdo15snwf06ohs4j3rolood"
                   value={content}
                   init={writeInit}
                   onEditorChange={handleEditorChange}
@@ -72,7 +75,7 @@ const WriteComment = ({ content, setContent, loading, handlePostComment }) => {
 
           <div className="flex items-center mt-2">
             {isFocused && (
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-2">
                 <Button
                   onClick={handlePostComment}
                   variant="contained"

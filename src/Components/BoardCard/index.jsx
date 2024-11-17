@@ -7,7 +7,7 @@ import {
   Person4Outlined as Person4OutlinedIcon,
   CheckBoxOutlined as CheckBoxOutlinedIcon,
   Add as AddIcon,
-  AccessTime as AccessTimeIcon
+  AccessTime as AccessTimeIcon,
 } from "@mui/icons-material";
 import { useCallback, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -27,10 +27,7 @@ import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
 import ShowComment from "./ShowComment";
-import {
-  AddTagInCard,
-  RemoveTagInCard
-} from "../../Services/API/ApiBoard/apiBoard";
+import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
 import { updateCard } from "../../Services/API/ApiCard";
 import CopyCard from "./CopyCard";
@@ -50,15 +47,10 @@ export const BoardCard = () => {
     setMembersInCard,
     membersInCard,
     handleFileChange,
-    content,
-    setContent,
-    isSaving,
-    handlePostComment,
     handleDeleteComment,
     loading,
-    setEditorInstance,
     boardId,
-    setDataCard
+    setDataCard,
   } = useListBoardContext();
 
   const { userData } = useStorage();
@@ -76,7 +68,7 @@ export const BoardCard = () => {
             deletedAt: tagCard.tag.deletedAt,
             color: tagCard.tag.color,
             name: tagCard.tag.name,
-            boardId: tagCard.tag.boardId
+            boardId: tagCard.tag.boardId,
           };
         })
         .filter(Boolean) || []
@@ -117,9 +109,7 @@ export const BoardCard = () => {
   const handleOpenAttach = () => setOpenAttach(true);
   const handleCloseAttach = () => setOpenAttach(false);
 
-  const listComment = dataCard?.comments?.sort(
-    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  );
+  const listComment = dataCard?.comments?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
@@ -136,7 +126,7 @@ export const BoardCard = () => {
           const isCreateItem = !item.isCreateItem;
           return {
             ...item,
-            isCreateItem: isCreateItem
+            isCreateItem: isCreateItem,
           };
         }
         return item;
@@ -158,24 +148,19 @@ export const BoardCard = () => {
       setChooseColorLabel(item);
       setInputTitleLabel(item.name);
     },
-    [isUpdateLabel, ShowDetailNewLabel]
+    [isUpdateLabel, ShowDetailNewLabel],
   );
   const handleCreateNewLabel = (dataColor, titleLabel = "") => {
     const dataLabel = {
       ...dataColor,
-      name: titleLabel
+      name: titleLabel,
     };
     setListLabel((prev) => {
       if (prev.some((item) => item.id === dataLabel.id)) {
         const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (
-          itemLabel.name !== dataLabel.name ||
-          itemLabel.color !== dataLabel.color
-        ) {
+        if (itemLabel.name !== dataLabel.name || itemLabel.color !== dataLabel.color) {
           return prev.map((item) =>
-            item.id === dataLabel.id
-              ? { ...item, color: dataLabel.color, name: dataLabel.name }
-              : item
+            item.id === dataLabel.id ? { ...item, color: dataLabel.color, name: dataLabel.name } : item,
           );
         }
         return prev;
@@ -191,19 +176,14 @@ export const BoardCard = () => {
   const handleUpdateLabel = (dataColor, titleLabel = "") => {
     const dataLabel = {
       ...dataColor,
-      name: titleLabel
+      name: titleLabel,
     };
     setListLabel((prev) => {
       if (prev.some((item) => item.id === dataLabel.id)) {
         const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (
-          itemLabel.name !== dataLabel.name ||
-          itemLabel.color !== dataLabel.color
-        ) {
+        if (itemLabel.name !== dataLabel.name || itemLabel.color !== dataLabel.color) {
           return prev.map((item) =>
-            item.id === dataLabel.id
-              ? { ...item, color: dataLabel.color, name: dataLabel.name }
-              : item
+            item.id === dataLabel.id ? { ...item, color: dataLabel.color, name: dataLabel.name } : item,
           );
         }
         return prev;
@@ -220,7 +200,7 @@ export const BoardCard = () => {
       id: listToDo.length + 1,
       title: nameItem,
       todoItem: [],
-      percent: 0
+      percent: 0,
     };
     setListToDo((prev) => {
       if (prev.some((item) => item.id === dataToDo.id)) {
@@ -264,7 +244,7 @@ export const BoardCard = () => {
         tagId: dataCard.tagId,
         startDate: dataCard.startDate,
         endDate: dataCard.endDate,
-        listId: dataList.id
+        listId: dataList.id,
       };
       const res = await updateCard(dataCard.id, data);
       setDataCard((prev) => {
@@ -303,10 +283,10 @@ export const BoardCard = () => {
       });
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        tagCards: [...(prevDataCard.tagCards || []), countLabel]
+        tagCards: [...(prevDataCard.tagCards || []), countLabel],
       }));
     },
-    [dataCard, boardId, countLabel, setDataCard]
+    [dataCard, boardId, countLabel, setDataCard],
   );
 
   const handleCheckDoneToDoItem = (Item, todoItemList) => {
@@ -318,21 +298,18 @@ export const BoardCard = () => {
             if (todoItem.id === todoItemList.id) {
               return {
                 ...todoItem,
-                checkDone: updatedCheckDone
+                checkDone: updatedCheckDone,
               };
             }
             return todoItem;
           });
 
-          const checkDoneCount = updatedTodoItems.filter(
-            (i) => i.checkDone
-          ).length;
-          const percent =
-            Math.round((100 * checkDoneCount) / updatedTodoItems.length) || 0;
+          const checkDoneCount = updatedTodoItems.filter((i) => i.checkDone).length;
+          const percent = Math.round((100 * checkDoneCount) / updatedTodoItems.length) || 0;
           return {
             ...todo,
             todoItem: updatedTodoItems,
-            percent
+            percent,
           };
         }
         return todo;
@@ -347,11 +324,11 @@ export const BoardCard = () => {
           const newDataItem = {
             id: i.todoItem.length + 1,
             title: nameItem,
-            checkDone: false
+            checkDone: false,
           };
           return {
             ...i,
-            todoItem: [...i.todoItem, newDataItem]
+            todoItem: [...i.todoItem, newDataItem],
           };
         }
         return i;
@@ -432,7 +409,7 @@ export const BoardCard = () => {
         scrollbarWidth: "thin",
         scrollbarColor: "#fff6 #00000026",
         maxHeight: "100vh",
-        overflowY: "auto"
+        overflowY: "auto",
       }}
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
     >
@@ -440,15 +417,11 @@ export const BoardCard = () => {
         {chooseColorBackground && (
           <div
             style={{
-              backgroundImage: chooseColorBackground.startsWith("http")
-                ? `url(${chooseColorBackground})`
-                : "none",
+              backgroundImage: chooseColorBackground.startsWith("http") ? `url(${chooseColorBackground})` : "none",
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              backgroundColor: chooseColorBackground.startsWith("#")
-                ? chooseColorBackground
-                : ""
+              backgroundColor: chooseColorBackground.startsWith("#") ? chooseColorBackground : "",
             }}
             className={`w-full h-[100px] rounded-t-[8px]`}
           />
@@ -460,20 +433,13 @@ export const BoardCard = () => {
                 <FeaturedPlayListIcon fontSize="small" />
               </div>
               <div className="flex-1 ml-4">
-                <div className="text-[16px] mb-2">
-                  {dataCard?.title || "No Title"}
-                </div>
+                <div className="text-[16px] mb-2">{dataCard?.title || "No Title"}</div>
                 <div className="flex items-center text-[12px] mb-6">
                   <span className="mr-2 font-normal">in the list</span>
                   <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
                     {dataList?.title || "No Title"}
                   </div>
-                  {isFollowing && (
-                    <RemoveRedEyeOutlinedIcon
-                      className="ml-2"
-                      style={{ fontSize: "16px" }}
-                    />
-                  )}
+                  {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                 </div>
                 <div className="flex flex-wrap items-center">
                   {membersInCard && membersInCard?.length !== 0 && (
@@ -489,7 +455,7 @@ export const BoardCard = () => {
                           <div
                             key={item.id}
                             style={{
-                              backgroundColor: item.color
+                              backgroundColor: item.color,
                             }}
                             className={`flex items-center justify-center rounded-[4px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] `}
                           >
@@ -513,9 +479,7 @@ export const BoardCard = () => {
                       <li className="flex items-center cursor-pointer">
                         <input
                           checked={checkCompleteEndDate}
-                          onChange={() =>
-                            setCheckCompleteEndDate(!checkCompleteEndDate)
-                          }
+                          onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
                           type="checkbox"
                           className="w-5 h-5 cursor-pointer"
                         />
@@ -525,9 +489,7 @@ export const BoardCard = () => {
                           >
                             <div className="">{endDateCheck}</div>
                             {checkCompleteEndDate && (
-                              <div className="bg-green-500 p-[2px] text-[10px] rounded-[4px] ml-2">
-                                complete
-                              </div>
+                              <div className="bg-green-500 p-[2px] text-[10px] rounded-[4px] ml-2">complete</div>
                             )}
                             <KeyboardArrowDownIcon fontSize="small" />
                           </div>
@@ -544,14 +506,9 @@ export const BoardCard = () => {
                       isFollowing={isFollowing}
                       isActive={true}
                       nameBtn={"Following"}
-                      className={
-                        "w-[120px] justify-center bg-gray-200 hover:bg-gray-300"
-                      }
+                      className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
                     >
-                      <RemoveRedEyeOutlinedIcon
-                        className="ml-1 mr-2"
-                        fontSize="small"
-                      />
+                      <RemoveRedEyeOutlinedIcon className="ml-1 mr-2" fontSize="small" />
                     </ButtonBoardCard>
                   </div>
                 </div>
@@ -576,18 +533,12 @@ export const BoardCard = () => {
                   <p className="ml-3">Attachment</p>
                 </div>
                 <div>
-                  <button
-                    onClick={handleOpenAttach}
-                    className="px-4 py-1 bg-gray-300 rounded-sm"
-                  >
+                  <button onClick={handleOpenAttach} className="px-4 py-1 bg-gray-300 rounded-sm">
                     Add
                   </button>
                   {openAttach && (
                     <div>
-                      <UploadPoper
-                        handleFileChange={handleFileChange}
-                        handleCloseAttach={handleCloseAttach}
-                      />
+                      <UploadPoper handleFileChange={handleFileChange} handleCloseAttach={handleCloseAttach} />
                     </div>
                   )}
                 </div>
@@ -611,9 +562,7 @@ export const BoardCard = () => {
                           onHandleEvent={() => handleRemoveToDoList(item)}
                           isActive={true}
                           nameBtn={"Erase"}
-                          className={
-                            "w-[60px] justify-center bg-gray-200 hover:bg-gray-300"
-                          }
+                          className={"w-[60px] justify-center bg-gray-200 hover:bg-gray-300"}
                         />
                       </div>
                     </div>
@@ -629,23 +578,16 @@ export const BoardCard = () => {
                   </div>
                   <ul>
                     {item.todoItem.map((dataItem, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center my-2 cursor-pointer"
-                      >
+                      <li key={index} className="flex items-center my-2 cursor-pointer">
                         <input
                           checked={dataItem.checkDone}
-                          onChange={() =>
-                            handleCheckDoneToDoItem(item, dataItem)
-                          }
+                          onChange={() => handleCheckDoneToDoItem(item, dataItem)}
                           type="checkbox"
                           className="w-5 h-5 mx-2 cursor-pointer"
                         />
                         <span className="flex items-center w-full">
                           <div
-                            onClick={() =>
-                              handleCheckDoneToDoItem(item, dataItem)
-                            }
+                            onClick={() => handleCheckDoneToDoItem(item, dataItem)}
                             className={`flex-1 hover:bg-gray-300 h-[34px] p-2 rounded-[4px] transition-all duration-50`}
                           >
                             <font>{dataItem.title}</font>
@@ -659,9 +601,7 @@ export const BoardCard = () => {
                           onHandleEvent={() => ShowCreateToDoItem(item)}
                           isActive={true}
                           nameBtn={"Add an item"}
-                          className={
-                            "w-[120px] justify-center bg-gray-200 hover:bg-gray-300"
-                          }
+                          className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
                         />
                       ) : (
                         <div>
@@ -677,22 +617,16 @@ export const BoardCard = () => {
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
                               <ButtonBoardCard
-                                onHandleEvent={() =>
-                                  handleAddToDoItem(inputTitleToDoItem, item)
-                                }
+                                onHandleEvent={() => handleAddToDoItem(inputTitleToDoItem, item)}
                                 isActive={true}
                                 nameBtn={"More"}
-                                className={
-                                  "w-[80px] justify-center bg-blue-500 text-white hover:bg-blue-600"
-                                }
+                                className={"w-[80px] justify-center bg-blue-500 text-white hover:bg-blue-600"}
                               />
                               <ButtonBoardCard
                                 onHandleEvent={() => ShowCreateToDoItem(item)}
                                 isActive={true}
                                 nameBtn={"Cancel"}
-                                className={
-                                  "w-[80px] ml-2 justify-center bg-gray-100 hover:bg-gray-300"
-                                }
+                                className={"w-[80px] ml-2 justify-center bg-gray-100 hover:bg-gray-300"}
                               />
                             </div>
                             <div className="flex items-center">
@@ -700,14 +634,12 @@ export const BoardCard = () => {
                                 onHandleEvent={ShowCreateToDoItem}
                                 isActive={true}
                                 nameBtn={"Assign"}
-                                className={
-                                  "w-[80px] justify-center hover:bg-gray-200"
-                                }
+                                className={"w-[80px] justify-center hover:bg-gray-200"}
                               >
                                 <Person4OutlinedIcon
                                   style={{
                                     fontSize: "18px",
-                                    marginRight: "4px"
+                                    marginRight: "4px",
                                   }}
                                 />
                               </ButtonBoardCard>
@@ -715,14 +647,12 @@ export const BoardCard = () => {
                                 onHandleEvent={ShowCreateToDoItem}
                                 isActive={true}
                                 nameBtn={"Expiration day"}
-                                className={
-                                  "w-[140px] ml-2 justify-center hover:bg-gray-200"
-                                }
+                                className={"w-[140px] ml-2 justify-center hover:bg-gray-200"}
                               >
                                 <AccessTimeIcon
                                   style={{
                                     fontSize: "18px",
-                                    marginRight: "4px"
+                                    marginRight: "4px",
                                   }}
                                 />
                               </ButtonBoardCard>
@@ -745,9 +675,7 @@ export const BoardCard = () => {
                   <ButtonBoardCard
                     isActive={true}
                     nameBtn={"Show details"}
-                    className={
-                      "w-[100px] justify-center bg-gray-200 hover:bg-gray-300"
-                    }
+                    className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
                   />
                 </div>
                 <div className="flex items-center text-[12px] mb-2"></div>
@@ -756,15 +684,7 @@ export const BoardCard = () => {
             </div>
             {/* POST COMMENTS */}
             <div className="flex w-full">
-              <WriteComment
-                setEditorInstance={setEditorInstance}
-                setContent={setContent}
-                loading={loading}
-                handleFileChange={handleFileChange}
-                content={content}
-                handlePostComment={handlePostComment}
-                isSaving={isSaving}
-              />
+              <WriteComment />
             </div>
             {/* SHOW COMMENT */}
             {listComment?.map((item) => (
@@ -779,11 +699,7 @@ export const BoardCard = () => {
           <div className="min-w-[180px]">
             <div className="relative flex flex-col items-center mx-2 mt-16 mb-4">
               {listBtnCard?.map((item, index) => (
-                <ButtonBoardCard
-                  onHandleEvent={(e) => handleClickBtn(e, item)}
-                  key={index}
-                  nameBtn={item.nameBtn}
-                >
+                <ButtonBoardCard onHandleEvent={(e) => handleClickBtn(e, item)} key={index} nameBtn={item.nameBtn}>
                   {item.Icon}
                 </ButtonBoardCard>
               ))}
@@ -867,10 +783,7 @@ export const BoardCard = () => {
         />
       )}
       {isShowMenuBtnCard && numberShow === 10 && (
-        <CopyCard
-          position={position}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-        />
+        <CopyCard position={position} handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard} />
       )}
     </div>
   );
