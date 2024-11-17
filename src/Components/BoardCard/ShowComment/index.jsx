@@ -11,7 +11,7 @@ import { editorInit } from "./constants/Editor.constant";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 import { formatDate } from "../WriteComment/helpers/formatDate";
 
-// const editorKey = process.env.REACT_APP_EDITOR_KEY;
+const editorKey = process.env.REACT_APP_EDITOR_KEY;
 
 const ShowComment = ({ item, handleDeleteComment }) => {
   const { dataCard, setLoading, setContent, setUpFileComment, setPostUploadedFiles, boardId, setDataCard, loading } =
@@ -64,8 +64,9 @@ const ShowComment = ({ item, handleDeleteComment }) => {
         files: [...prevDataCard.files, ...response.data.files],
       }));
       setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
-
       toast.success("Edit successfully!");
+      setIsFocused(false); // Đóng editor
+      setCanEdit(false);
     } catch (err) {
       toast.error("Cannot Edit comment");
       console.error("Comment error: ", err);
@@ -125,7 +126,7 @@ const ShowComment = ({ item, handleDeleteComment }) => {
   return (
     <>
       {isFocused && canEdit ? (
-        <div className="flex">
+        <div className="flex justify-between">
           {userData?.avatarUrl ? (
             <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
           ) : (
@@ -133,9 +134,9 @@ const ShowComment = ({ item, handleDeleteComment }) => {
               {userData?.name[0] || " "}
             </div>
           )}
-          <div className="w-full ml-4">
+          <div className="w-full ">
             <Editor
-              apiKey="qibz0pdsl3j3pwij2g3sw1414jdo15snwf06ohs4j3rolood"
+              apiKey={editorKey}
               value={editorContent}
               init={editorInit}
               onEditorChange={handleEditorChange}
@@ -150,7 +151,6 @@ const ShowComment = ({ item, handleDeleteComment }) => {
               >
                 {loading ? "Saving..." : "Save"}
               </Button>
-              <div className="ml-4"></div>
               <Button
                 onClick={handleCloseComment}
                 className="text-white bg-blue-500 hover:bg-blue-500 hover:text-white"
@@ -161,7 +161,7 @@ const ShowComment = ({ item, handleDeleteComment }) => {
           </div>
         </div>
       ) : (
-        <div className="flex p-2 my-2 space-x-3 rounded-md bg-gray-50" key={item.id}>
+        <div className="flex justify-between py-2 my-2 space-x-3 rounded-md" key={item.id}>
           {userData?.avatarUrl ? (
             <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
           ) : (
@@ -171,7 +171,7 @@ const ShowComment = ({ item, handleDeleteComment }) => {
           )}
 
           {/* Comment infomation */}
-          <div>
+          <div className="p-2 bg-gray-50">
             <div className="flex items-center">
               <span className="mr-4 text-[14px] font-medium">{userData.name}</span>
               <p className="text-[14px] font-normal text-gray-500">Created {formatDate(item.createdAt)}</p>

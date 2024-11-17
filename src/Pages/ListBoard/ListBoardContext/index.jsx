@@ -56,7 +56,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
   const [upFileComment, setUpFileComment] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]); //file  upload len thang server
-  const [postUploadedFiles, setPostUploadedFiles] = useState([]);
+  const [postUploadedFiles, setPostUploadedFiles] = useState([]); // file upload len api
 
   const { workspaceDetails: dataWorkspace } = useGetWorkspaceById(idWorkSpace);
 

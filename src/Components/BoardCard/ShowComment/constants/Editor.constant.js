@@ -7,7 +7,6 @@ export const editorInit = {
   width: "100%",
   menubar: false,
   forced_root_block: "p",
-  newline_behavior: "",
   statusbar: false,
   branding: false,
   plugins: ["advlist", "autolink", "lists", "link", "image"],
