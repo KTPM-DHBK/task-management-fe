@@ -423,7 +423,7 @@ export const BoardCard = () => {
               backgroundRepeat: "no-repeat",
               backgroundColor: chooseColorBackground.startsWith("#") ? chooseColorBackground : "",
             }}
-            className={`w-full h-[100px] rounded-t-[8px]`}
+            className={`w-full min-h-[100px] rounded-t-[8px]`}
           />
         )}
         <div className="flex justify-between font-medium text-[12px] p-2 z-500">

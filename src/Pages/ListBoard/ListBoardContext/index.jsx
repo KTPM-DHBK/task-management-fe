@@ -440,7 +440,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         upFileComment,
         setUpFileComment,
         setIsShowBoardEdit,
-        setLoading
+        setLoading,
       }}
     >
       {children}

@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { Close as CloseIcon } from "@mui/icons-material";
 
 import { ButtonBoardCard } from "../../ButtonBoardCard";
 import { getAllTagByIdBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
-import { apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 
 function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, chooseBackground }) {
   const { dataBoard } = useListBoardContext();
   const [listColorLabel, setListColorLabel] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [allUrls, setAllUrls] = useState([]);
+  // const [uploadedFiles, setUploadedFiles] = useState([]);
+  // const [allUrls, setAllUrls] = useState([]);
+
+  const {postUploadedFiles, handleFileChange} = useListBoardContext();
+  console.log('postUploadedFiles', postUploadedFiles);
 
   useEffect(() => {
     const getAllLabelOfBoard = async () => {
@@ -33,28 +34,29 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
     chooseBackground("");
   };
 
-  const handleFileChange = async (event) => {
-    const files = event.target.files;
-    if (files.length === 0) return;
-    toast.info("Uploading...");
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
-    try {
-      const response = await apiUploadMultiFile(formData);
-      toast.success("Upload successful!");
-      const totalFileUpload = [...response.data, ...uploadedFiles];
-      setUploadedFiles(totalFileUpload);
-      // Lấy tất cả các URL từ totalFileUpload và lưu trữ chúng trong trạng thái allUrls
-      const urls = totalFileUpload.map((file) => file.url);
-      setAllUrls(urls);
-      chooseBackground(urls[0]);
-      return response.data;
-    } catch (error) {
-      toast.error("Upload failed!");
-    }
-  };
+  // const handleFileChange = async (event) => {
+  //   const files = event.target.files;
+  //   if (files.length === 0) return;
+  //   toast.info("Uploading...");
+  //   const formData = new FormData();
+  //   for (let i = 0; i < files.length; i++) {
+  //     formData.append("files", files[i]);
+  //   }
+  //   try {
+  //     const response = await apiUploadMultiFile(formData);
+  //     toast.success("Upload successful!");
+  //     const totalFileUpload = [...response.data, ...uploadedFiles];
+  //     setUploadedFiles(totalFileUpload);
+  //     // Lấy tất cả các URL từ totalFileUpload và lưu trữ chúng trong trạng thái allUrls
+  //     const urls = totalFileUpload.map((file) => file.url);
+  //     setAllUrls(urls);
+  //     chooseBackground(urls[0]);
+  //     return response.data;
+  //   } catch (error) {
+  //     toast.error("Upload failed!");
+  //   }
+  // };
+
   return (
     <div
       style={{ top: position.top - 300, left: position.left }}
@@ -116,16 +118,19 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
               : null}
           </ul>
         </div>
-        <div className="py-2 bg-white">Attachments</div>
+        <div className="py-2 bg-white">Attachments
+
+        </div>
+
         <div className="flex items-center mb-4">
-          {allUrls.map((url, index) => (
+          {postUploadedFiles.map((url, index) => (
             <div
-              key={index}
-              className={`${background === url ? "border-[3px] border-blue-400 shadow-[0_3px_10px_rgba(0,0,0,0.3)]" : ""} w-[80px] h-[50px] bg-gray-500 overflow-hidden rounded-[8px] mr-1`}
+              key={url.id}
+              className={`${background === url.url ? "border-[3px] border-blue-400 shadow-[0_3px_10px_rgba(0,0,0,0.3)]" : ""} w-[80px] h-[50px] bg-gray-500 overflow-hidden rounded-[8px] mr-1`}
             >
               <img
-                onClick={() => handleChooseColor(url)}
-                src={url}
+                onClick={() => handleChooseColor(url.url)}
+                src={url.url}
                 alt={`Uploaded ${index + 1}`}
                 className={`block w-full h-full cursor-pointer `}
                 style={{ objectFit: "scale-down" }}
@@ -134,7 +139,7 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
           ))}
         </div>
         <button className="w-full px-2 rounded-sm">
-          <input type="file" id="fileInput" multiple className="hidden" onChange={handleFileChange} />
+          {/* <input type="file" id="fileInput" multiple className="hidden" onChange={handleFileChange} /> */}
           <label
             htmlFor="fileInput"
             className="block w-full p-2 text-center bg-gray-200 rounded-sm cursor-pointer hover:bg-gray-300"
