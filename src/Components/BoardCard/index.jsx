@@ -36,7 +36,7 @@ import { updateCard } from "../../Services/API/ApiCard";
 import CopyCard from "./CopyCard";
 import UploadPoper from "./Attachment/UploadPoper";
 import WriteComment from "./WriteComment";
-import CardAddDetail from "./CardAddDetail";
+import { formatDate } from "./WriteComment/helpers/formatDate";
 
 export const BoardCard = () => {
   const {
@@ -116,17 +116,6 @@ export const BoardCard = () => {
   const [openAttach, setOpenAttach] = useState(false);
   const handleOpenAttach = () => setOpenAttach(true);
   const handleCloseAttach = () => setOpenAttach(false);
-
-  // handle date
-  const formatDate = (isoString) => {
-    const date = new Date(isoString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
-    const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${day}-${month}-${year}, ${hours}:${minutes}`;
-  };
 
   const listComment = dataCard?.comments?.sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
