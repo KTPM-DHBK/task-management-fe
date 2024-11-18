@@ -114,7 +114,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     async (id, allUrls) => {
       try {
         const response = await apiAssignFile(id, allUrls);
-        setPostUploadedFiles((prev) => [...prev, ...response.data.files]);
+        setPostUploadedFiles(response.data.files);
         return response.data.files;
       } catch (error) {
         console.error("Failed to get uploaded files:", error);

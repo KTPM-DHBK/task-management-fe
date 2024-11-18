@@ -38,7 +38,6 @@ const Attachment = () => {
   );
   const listFile = postUploadedFiles.length;
   const quantityFile = useMemo(() => listFile - 4, [listFile]);
-
   return (
     <>
       {fileToShow.map((item) => (

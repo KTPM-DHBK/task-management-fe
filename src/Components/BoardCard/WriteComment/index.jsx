@@ -44,7 +44,7 @@ const WriteComment = () => {
         </div>
       )}
       <div className="ml-4">
-        <div className="border-gray-300 rounded-sm w-[428px] h-full">
+        <div className="border-gray-300 rounded-sm w-[428px]">
           {isFocused ? (
             <Editor
               apiKey="qibz0pdsl3j3pwij2g3sw1414jdo15snwf06ohs4j3rolood"

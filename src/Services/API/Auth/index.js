@@ -33,3 +33,7 @@ export async function getProfile() {
     console.error(error);
   }
 }
+
+export function UpdateProfile(params) {
+  return request.patch("/auth/me", params);
+}

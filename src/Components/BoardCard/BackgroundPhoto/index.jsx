@@ -6,13 +6,8 @@ import { getAllTagByIdBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
 function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, chooseBackground }) {
-  const { dataBoard } = useListBoardContext();
+  const { dataBoard, postUploadedFiles, handleFileChange } = useListBoardContext();
   const [listColorLabel, setListColorLabel] = useState([]);
-  // const [uploadedFiles, setUploadedFiles] = useState([]);
-  // const [allUrls, setAllUrls] = useState([]);
-
-  const {postUploadedFiles, handleFileChange} = useListBoardContext();
-  console.log('postUploadedFiles', postUploadedFiles);
 
   useEffect(() => {
     const getAllLabelOfBoard = async () => {
@@ -33,29 +28,6 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
   const handleRemoveColor = () => {
     chooseBackground("");
   };
-
-  // const handleFileChange = async (event) => {
-  //   const files = event.target.files;
-  //   if (files.length === 0) return;
-  //   toast.info("Uploading...");
-  //   const formData = new FormData();
-  //   for (let i = 0; i < files.length; i++) {
-  //     formData.append("files", files[i]);
-  //   }
-  //   try {
-  //     const response = await apiUploadMultiFile(formData);
-  //     toast.success("Upload successful!");
-  //     const totalFileUpload = [...response.data, ...uploadedFiles];
-  //     setUploadedFiles(totalFileUpload);
-  //     // Lấy tất cả các URL từ totalFileUpload và lưu trữ chúng trong trạng thái allUrls
-  //     const urls = totalFileUpload.map((file) => file.url);
-  //     setAllUrls(urls);
-  //     chooseBackground(urls[0]);
-  //     return response.data;
-  //   } catch (error) {
-  //     toast.error("Upload failed!");
-  //   }
-  // };
 
   return (
     <div
@@ -139,7 +111,7 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
           ))}
         </div>
         <button className="w-full px-2 rounded-sm">
-          {/* <input type="file" id="fileInput" multiple className="hidden" onChange={handleFileChange} /> */}
+          <input type="file" id="fileInput" multiple className="hidden" onChange={handleFileChange} />
           <label
             htmlFor="fileInput"
             className="block w-full p-2 text-center bg-gray-200 rounded-sm cursor-pointer hover:bg-gray-300"
