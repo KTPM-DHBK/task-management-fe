@@ -1,28 +1,25 @@
 import { Avatar, Button, CircularProgress, Divider, TextField } from "@mui/material";
 import PublicIcon from "@mui/icons-material/Public";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { Controller, useForm } from "react-hook-form";
 import { userServices } from "../../../Services";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { useStorage } from "../../../Contexts";
 import { Link } from "react-router-dom";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import UpdateImageProfile from "./updateImageProfile";
 
 export const ProfileAndVisibility = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [avatarFile, setAvatarFile] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
   const [poperAvatar, setPoperAvatar] = useState(false);
 
   const handleOpenPoperAvatar = () => {
     setPoperAvatar(!poperAvatar);
-  };
+  }
 
   const handleChooseAvatar = (e) => {
-    const file = e.target.files[0];
-    setAvatarFile(file.name);
-    setAvatarUrl(URL.createObjectURL(file));
+    setAvatarFile(e.target.files[0]);
   };
 
   const { userData, setUserData } = useStorage();
@@ -71,12 +68,8 @@ export const ProfileAndVisibility = () => {
       <div className="max-w-[530px] m-auto flex flex-col">
         <div>
           <div className="absolute ml-[40px] mt-[84px] flex items-center justify-center">
-            <Avatar
-              sx={{ backgroundColor: 'green', width: '4rem', height: '4rem' }}
-              className="relative flex items-center justify-center text-2xl font-bold text-white bg-red-500 rounded-full w-30 h-30"
-              src={avatarUrl || userData?.avatarUrl}
-            >
-              {!avatarUrl && userData?.name[0]}
+            <Avatar sx={{backgroundColor: 'green', width: '4rem', height: '4rem'}} className="relative flex items-center justify-center text-2xl font-bold text-white bg-red-500 rounded-full w-30 h-30">
+              {userData?.name[0]}
               <div onClick={handleOpenPoperAvatar} className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0 cursor-pointer hover:opacity-100">
                 <CameraAltIcon style={{ fontSize: 24, color: "white" }} />
               </div>
@@ -85,7 +78,9 @@ export const ProfileAndVisibility = () => {
           <div className="cursor-pointer">
             <img className="mt-[18px] mb-12" src="https://trello.com/assets/eff3d701a9c3a71105ea.svg" alt="avatar" />
           </div>
-          {poperAvatar && <UpdateImageProfile handleChooseAvatar={handleChooseAvatar} />}
+          {poperAvatar && (
+            <UpdateImageProfile handleChooseAvatar={handleChooseAvatar}/>
+          )}
         </div>
         <div>
           <h1 className="text-2xl font-semibold text-[var(--text-color)] mb-[10px]">
@@ -122,6 +117,9 @@ export const ProfileAndVisibility = () => {
             .
           </p>
         </div>
+
+        <h3 className="mb-2 mt-10 text-[20px] font-semibold text-[var(--text-color)]">About</h3>
+        <Divider component={"div"} />
         <form onSubmit={form.handleSubmit(handleUpdate)}>
           <div className="flex flex-col ">
             <div className="flex justify-between my-3">
@@ -134,19 +132,21 @@ export const ProfileAndVisibility = () => {
             <Controller
               name="userName"
               control={form.control}
-              render={({ field }) => (
-                <TextField
-                  value={field.value}
-                  onChange={field.onChange}
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      paddingY: "8px",
-                      paddingX: "12px",
-                      fontSize: 14,
-                    },
-                  }}
-                />
-              )}
+              render={({ field }) => {
+                return (
+                  <TextField
+                    value={field.value}
+                    onChange={field.onChange}
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        paddingY: "8px",
+                        paddingX: "12px",
+                        fontSize: 14,
+                      },
+                    }}
+                  />
+                );
+              }}
             />
           </div>
 
