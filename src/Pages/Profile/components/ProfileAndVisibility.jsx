@@ -11,6 +11,7 @@ import UpdateImageProfile from "./updateImageProfile";
 
 export const ProfileAndVisibility = () => {
   const [isFetching, setIsFetching] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [avatarFile, setAvatarFile] = useState("");
   const [poperAvatar, setPoperAvatar] = useState(false);
 
@@ -19,16 +20,15 @@ export const ProfileAndVisibility = () => {
   }
 
   const handleChooseAvatar = (e) => {
-    setAvatarFile(e.target.files[0]);
+    const file = e.target.files[0];
+    setAvatarFile(file.name);
+    setAvatarUrl(URL.createObjectURL(file));
   };
-
   const { userData, setUserData } = useStorage();
   console.log("userData1", userData);
 
   const form = useForm({
     defaultValues: {
-      userName: userData?.name,
-      bio: userData?.bio || "",
       avatar: userData?.avatarUrl || "",
     },
   });
@@ -37,8 +37,6 @@ export const ProfileAndVisibility = () => {
     setIsFetching(true);
     userServices
       .updateUser({
-        name: values.userName,
-        bio: values.bio,
         avatar: avatarFile,
       })
       .then((res) => {
@@ -68,9 +66,9 @@ export const ProfileAndVisibility = () => {
       <div className="max-w-[530px] m-auto flex flex-col">
         <div>
           <div className="absolute ml-[40px] mt-[84px] flex items-center justify-center">
-            <Avatar sx={{backgroundColor: 'green', width: '4rem', height: '4rem'}} className="relative flex items-center justify-center text-2xl font-bold text-white bg-red-500 rounded-full w-30 h-30">
+            <Avatar src={avatarUrl}  onClick={handleOpenPoperAvatar} sx={{ cursor: 'pointer' ,backgroundColor: 'green', width: '4rem', height: '4rem'}} >
               {userData?.name[0]}
-              <div onClick={handleOpenPoperAvatar} className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0 cursor-pointer hover:opacity-100">
+              <div className="absolute inset-0 z-30 flex items-center justify-center transition-opacity duration-300 opacity-0 cursor-pointer hover:opacity-100">
                 <CameraAltIcon style={{ fontSize: 24, color: "white" }} />
               </div>
             </Avatar>
