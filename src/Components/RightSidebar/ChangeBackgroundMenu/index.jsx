@@ -5,6 +5,8 @@ import { useCallback } from "react";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 import { updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import { toast } from "react-toastify";
+import { EQueryKeys } from "../../../constants";
+import { useQueryClient } from "@tanstack/react-query";
 
 const colors = [
   "https://trello.com/assets/707f35bc691220846678.svg",
@@ -19,20 +21,25 @@ const colors = [
 ];
 
 export default function ChangeBackgroundMenu() {
-  const { dataBoard, setDataBoard } = useListBoardContext();
+  const { dataBoard } = useListBoardContext();
 
+  const queryClient = useQueryClient();
   const [backgroundColor, setBackgroundColor] = useState(dataBoard.coverUrl || "");
 
   const handleChooseColor = useCallback((colorUrl) => {
     setBackgroundColor(colorUrl);
-    setDataBoard((prev) => {
-      return {
-        ...prev,
-        coverUrl: colorUrl,
-      };
-    });
+    // setDataBoard((prev) => {
+    //   return {
+    //     ...prev,
+    //     coverUrl: colorUrl,
+    //   };
+    // });
     updateBoard(dataBoard.id, { coverUrl: colorUrl })
-      .then((res) => {})
+      .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: [EQueryKeys.GET_BOARD_BY_ID],
+        });
+      })
       .catch(() => {
         toast.error("Update background color unsuccessfully");
       });
