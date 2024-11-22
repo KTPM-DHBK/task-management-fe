@@ -18,5 +18,4 @@ export const EQueryKeys = {
   //CARD
   GET_CARD_BY_LIST: "getCardByList",
   GET_CARD_BY_ID: "getCardById",
-  GET_CARD_COMMENT: "getCardComment",
 };

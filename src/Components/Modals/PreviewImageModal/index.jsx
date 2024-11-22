@@ -6,7 +6,6 @@ import CloseIcon from "@mui/icons-material/Close";
 
 export const PreviewImageModal = ({ open, handleCloseImageClick }) => {
   const { watch } = useFormContext();
-  const imageUrl = watch("selectedImgUrl");
 
   return (
     <Modal open={open} onClose={handleCloseImageClick}>
@@ -19,7 +18,7 @@ export const PreviewImageModal = ({ open, handleCloseImageClick }) => {
         <div className="z-50 w-[80%] h-[80%] text-center bg-black bg-opacity-50 overflow-y-auto">
           <Zoom>
             <img
-              src={imageUrl}
+              src={watch("selectedImgUrl")}
               alt="attachment"
               className="rounded-[4px] p-4 cursor-pointer object-cover w-full h-full"
             />
@@ -29,7 +28,7 @@ export const PreviewImageModal = ({ open, handleCloseImageClick }) => {
           <div className="flex items-center justify-center mt-3 text-center">
             <Link
               className="p-2 mr-3 rounded-md cursor-pointer hover:bg-gray-800"
-              to={imageUrl}
+              to={watch("selectedImgUrl")}
               target="_blank"
             >
               <ArrowOutwardIcon

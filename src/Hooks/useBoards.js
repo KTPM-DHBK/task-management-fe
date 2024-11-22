@@ -1,13 +1,8 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import {
-  getAllMembersByIdBoard,
-  getAllTagByIdBoard,
-  getBoard,
-  getBoardById
-} from "../Services/API/ApiBoard/apiBoard";
+import { getAllMembersByIdBoard, getBoard, getBoardById } from "../Services/API/ApiBoard/apiBoard";
 import { EQueryKeys } from "../constants";
 import { useStorage } from "../Contexts";
-import { getAllCardByList } from "../Services/API/ApiCard";
+import { getAllCardByList, getCardById } from "../Services/API/ApiCard";
 
 export const useGetAllBoards = (options) => {
   const { isLoggedIn } = useStorage();
@@ -16,8 +11,8 @@ export const useGetAllBoards = (options) => {
     queryFn: () => getBoard(options),
     ...{
       refetchOnWindowFocus: false,
-      enabled: isLoggedIn
-    }
+      enabled: isLoggedIn,
+    },
   });
 
   return { boardData: data, isLoading, isError, refetch };
@@ -29,8 +24,8 @@ export const useGetBoardById = (boardId) => {
     queryFn: () => getBoardById(boardId),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!boardId
-    }
+      enabled: !!boardId,
+    },
   });
 
   return { data, isLoading, isError, refetch };
@@ -42,8 +37,8 @@ export const useGetMembersByBoard = (boardId) => {
     queryFn: () => getAllMembersByIdBoard(boardId),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!boardId
-    }
+      enabled: !!boardId,
+    },
   });
 
   return { data: data?.data || [], isLoading, isError, refetch };
@@ -55,7 +50,7 @@ export const useGetAllCardByList = (boardData) => {
       return {
         queryKey: [EQueryKeys.GET_CARD_BY_LIST, list.id],
         queryFn: () => getAllCardByList(list.id, boardData.id),
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
       };
     }) || [];
 
@@ -65,23 +60,23 @@ export const useGetAllCardByList = (boardData) => {
     combine: (results) => {
       return {
         data: results.flatMap((result) => result.data?.data || []),
-        isLoading: results.some((result) => result.isLoading)
+        isLoading: results.some((result) => result.isLoading),
       };
-    }
+    },
   });
 
   return { data, isLoading };
 };
 
-export const useGetTagByBoardId = (boardId) => {
+export const useGetCardById = (cardId) => {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [EQueryKeys.GET_TAG_BY_BOARD, boardId],
-    queryFn: () => getAllTagByIdBoard(boardId),
+    queryKey: [EQueryKeys.GET_CARD_BY_ID, cardId],
+    queryFn: () => getCardById(cardId),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!boardId
-    }
+      enabled: !!cardId,
+    },
   });
 
-  return { boardTags: data?.data, isLoading, isError, refetch };
+  return { data: data?.data, isLoading, isError, refetch };
 };

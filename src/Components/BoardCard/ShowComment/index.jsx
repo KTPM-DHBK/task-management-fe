@@ -1,50 +1,40 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStorage } from "../../../Contexts";
 import { Avatar, Button } from "@mui/material";
 import "react-medium-image-zoom/dist/styles.css";
-import { deleteComment, updateComment } from "../../../Services/API/ApiComment";
+import { updateComment } from "../../../Services/API/ApiComment";
 import { toast } from "react-toastify";
 import { useForm, FormProvider } from "react-hook-form";
 import { PreviewImageModal } from "../../Modals/PreviewImageModal";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 import { formatDate } from "../WriteComment/helpers/formatDate";
+import { useGetCardById } from "../../../Hooks";
 import { TextEditor } from "../../TextEditor/TextEditor";
 import { useParams } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../../Loading";
 
-export const CardComments = ({ item }) => {
-  const queryClient = useQueryClient();
+export const BoardComments = ({ item, handleDeleteComment }) => {
   const { idBoard } = useParams();
   const { setPostUploadedFiles } = useListBoardContext();
   const [loading, setLoading] = useState(false);
   const { userData } = useStorage();
 
+  const [isFocused, setIsFocused] = useState(false);
   const [openImagePreview, setOpenImagePreview] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
 
   const cardId = localStorage.getItem("cardId");
+  const { data: dataCard, isLoading } = useGetCardById(cardId);
 
-  const method = useForm({
-    defaultValues: {
-      content: item.content || ""
-    }
-  });
+  const method = useForm();
   const { setValue, watch, handleSubmit } = method;
 
-  useEffect(() => {
-    setValue("content", item.content);
-    // eslint-disable-next-line
-  }, [item.content]);
+  const handleImageClick = (url) => {
+    setValue("selectedImgUrl", url);
+    setOpenImagePreview(true);
+  };
 
-  // const handleImageClick = (url) => {
-  //   console.log("url", url);
-  //   setValue("selectedImgUrl", url);
-  //   setOpenImagePreview(true);
-  // };
-
-  const handleUpdateComment = async (data, e) => {
-    e.preventDefault();
+  const handleUpdateComment = async (data) => {
     const { content } = data;
     setLoading(true);
 
@@ -56,30 +46,22 @@ export const CardComments = ({ item }) => {
     const params = {
       content: content,
       files: imageUrls,
-      cardId: cardId
+      cardId: dataCard.id
     };
+
+    const loadingToastId = toast.loading();
 
     try {
       const response = await updateComment(idBoard, item.id, params);
+
       const newComment = response.data;
-      setValue("content", newComment.content);
       setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
     } catch (err) {
-      toast.error("Cannot Update comment");
+      toast.error("Cannot create comment");
       console.error("Comment error: ", err);
     } finally {
-      setCanEdit(false);
+      toast.dismiss(loadingToastId);
       setLoading(false);
-    }
-  };
-
-  const handleDeleteComment = async (commentId) => {
-    try {
-      await deleteComment(idBoard, commentId);
-      queryClient.invalidateQueries(["GET_CARD_COMMENT", cardId]);
-      toast.success("Deleted comment successfully!");
-    } catch (err) {
-      console.error("Error deleting comment:", err);
     }
   };
 
@@ -88,104 +70,120 @@ export const CardComments = ({ item }) => {
     setValue("selectedImgUrl", "");
   };
 
-  const renderContent = useMemo(() => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(item.content, "text/html");
-    const images = doc.querySelectorAll("img");
+  const handleEditClick = () => {
+    setIsFocused(true);
+    setCanEdit(true);
+    setValue("content", item.content);
+  };
 
-    images.forEach((img) => {
-      img.style.cursor = "pointer";
-      img.onclick = () => {
-        setValue("selectedImgUrl", img.src);
-        setOpenImagePreview(true);
-      };
-    });
+  const handleCloseComment = () => {
+    setIsFocused(false);
+    setCanEdit(false);
+  };
 
-    return { __html: doc.body.innerHTML };
+  useEffect(() => {
+    const handleEditorClick = (e) => {
+      if (e.target.tagName === "IMG") {
+        handleImageClick(e.target.src);
+      }
+    };
+
+    const editorArea = document.querySelector(".tox-edit-area");
+
+    if (isFocused && editorArea) {
+      editorArea.addEventListener("click", handleEditorClick);
+    }
+
+    return () => {
+      if (isFocused && editorArea) {
+        editorArea.removeEventListener("click", handleEditorClick);
+      }
+    };
     // eslint-disable-next-line
-  }, [item.content]);
+  }, [isFocused]);
 
   return (
     <FormProvider {...method}>
-      <div className="flex p-4 my-4 gap-4 rounded-md bg-gray-50" key={item.id}>
-        <Avatar
-          sx={{ width: "30px", height: "30px" }}
-          src={userData?.avatarUrl}
-        >
-          {userData?.name[0] || " "}
-        </Avatar>
-        <div className="w-full">
-          <div className="flex items-center w-full mb-4">
-            <span className="mr-4 text-[14px] font-medium">
-              {userData.name}
-            </span>
-            <p className="text-[14px] font-normal text-gray-500">
-              Created {formatDate(item.createdAt)}
-            </p>
+      {isFocused && canEdit ? (
+        <form onSubmit={handleSubmit(handleUpdateComment)}>
+          <TextEditor
+            value={watch("content")}
+            onChange={(value) => {
+              setValue("content", value);
+            }}
+            loading={loading}
+            setLoading={setLoading}
+            placeholder="Write your message..."
+          />
+          <div className="flex items-center justify-between mt-2">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ textTransform: "none" }}
+              disabled={!watch("content") || loading}
+            >
+              Save
+            </Button>
+            <div className="ml-4"></div>
+            <Button
+              onClick={handleCloseComment}
+              size="small"
+              sx={{ textTransform: "none" }}
+              className="text-white bg-blue-500 hover:bg-blue-500 hover:text-white px-1"
+            >
+              Discard Change
+            </Button>
           </div>
-          <form onSubmit={handleSubmit(handleUpdateComment)}>
-            {canEdit ? (
-              <>
-                <TextEditor
-                  value={watch("content")}
-                  onChange={(value) => {
-                    setValue("content", value);
-                  }}
-                  loading={loading}
-                  setLoading={setLoading}
-                  placeholder="Write your message..."
-                />
-                <div className="flex items-center justify-between mt-2">
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    sx={{ textTransform: "none" }}
-                    disabled={!watch("content") || loading}
-                  >
-                    Save
-                  </Button>
-                  <div className="ml-4"></div>
-                  <Button
-                    onClick={() => setCanEdit(false)}
-                    size="small"
-                    sx={{ textTransform: "none" }}
-                    className="text-white bg-blue-500 hover:bg-blue-500 hover:text-white px-1"
-                  >
-                    Discard Change
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div
-                  dangerouslySetInnerHTML={renderContent}
-                  className="p-3 my-2 w-full  bg-white border border-gray-300 rounded-md max-w-[400px] break-words"
-                />
-                <div className="flex mt-2 space-x-4 text-sm text-gray-500">
-                  <button
-                    onClick={() => setCanEdit(true)}
-                    className="hover:underline"
-                  >
-                    Edit
-                  </button>
-                  <span>•</span>
-                  <button
-                    onClick={() => handleDeleteComment(item.id)}
-                    type="button"
-                    className="hover:underline hover:text-red-500"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </>
-            )}
-          </form>
-        </div>
-      </div>
+        </form>
+      ) : (
+        <div
+          className="flex p-2 my-2 space-x-3 rounded-md bg-gray-50"
+          key={item.id}
+        >
+          <Avatar
+            sx={{ width: "30px", height: "30px" }}
+            src={userData?.avatarUrl}
+          >
+            {userData?.name[0] || " "}
+          </Avatar>
 
-      {!userData ||
+          {/* Comment infomation */}
+          <div className="w-full">
+            <div className="flex items-center w-full">
+              <span className="mr-4 text-[14px] font-medium">
+                {userData.name}
+              </span>
+              <p className="text-[14px] font-normal text-gray-500">
+                Created {formatDate(item.createdAt)}
+              </p>
+            </div>
+
+            {/* Comment content */}
+            <div
+              dangerouslySetInnerHTML={{ __html: item.content }}
+              className="p-3 my-2 w-full  bg-white border border-gray-300 rounded-lg"
+            />
+
+            {/* Actions */}
+            <div className="flex mt-2 space-x-4 text-sm text-gray-500">
+              <button onClick={handleEditClick} className="hover:underline">
+                Edit
+              </button>
+              <span>•</span>
+              <button
+                onClick={() => handleDeleteComment(item.id)}
+                className="hover:underline"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isLoading ||
+        !userData ||
         (loading && <Loading className="bg-white bg-opacity-10 z-1" />)}
       {
         <PreviewImageModal
